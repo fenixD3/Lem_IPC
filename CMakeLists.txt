@@ -8,4 +8,6 @@ include_directories(includes)
 add_executable(Lem_IPC
         sources/main.c
         sources/check_input.c
-)
+        sources/ipc_management.c)
+
+target_link_libraries(Lem_IPC pthread rt)

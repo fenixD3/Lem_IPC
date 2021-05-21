@@ -1,8 +1,8 @@
 #include "lem-ipc.h"
 
-int		main(int ac, char **av)
+int main(int ac, char **av)
 {
-	if (!check(ac, av))
-		exit(EXIT_FAILURE);
+	check_input(ac, av);
+	create_shm();
 	return (EXIT_SUCCESS);
 }
