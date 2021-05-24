@@ -4,14 +4,46 @@
 # define TEAM_COUNT 4
 # define MAP_X 20
 # define MAP_Y 20
-# define SHM_MAP_NAME "game_map"
 
+# define SHM_MAP_NAME "game_map"
+# define SEM_NAME "/game_sem"
+# define MQ_NAME "/game_mq"
 
 # include <stdio.h>
 # include <stdbool.h>
 # include <stdlib.h>
+# include <errno.h>
+# include <unistd.h>
+# include <sys/mman.h>
+# include <fcntl.h>
+# include <semaphore.h>
+# include <mqueue.h>
 
-void check_input(int ac, char **av);
-void create_shm(void);
+typedef struct s_ipcs
+{
+	int		shm_fd;
+	char	*shm_addr;
+	sem_t	*sem;
+	mqd_t	mq;
+}		t_ipcs;
+
+typedef struct s_player
+{
+	int		team_number;
+	t_ipcs	*ipcs;
+}		t_player;
+
+void	check_input(int ac, char **av);
+
+void	create_ipcs(t_ipcs *ipcs);
+void	create_shm(t_ipcs *ipcs);
+int		get_shm_mmap_size(void);
+void	create_sem(t_ipcs *ipcs);
+void	create_mq(t_ipcs *ipcs);
+
+void	close_ipcs(t_ipcs *ipcs);
+void	close_shm(t_ipcs *ipcs);
+void	close_sem(t_ipcs *ipcs);
+void	close_mq(t_ipcs *ipcs);
 
 #endif

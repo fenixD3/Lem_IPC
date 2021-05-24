@@ -2,7 +2,9 @@
 
 int main(int ac, char **av)
 {
+	t_ipcs ipcs;
+
 	check_input(ac, av);
-	create_shm();
+	create_ipcs(&ipcs);
 	return (EXIT_SUCCESS);
 }
