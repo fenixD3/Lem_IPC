@@ -10,6 +10,6 @@ add_executable(Lem_IPC
         sources/check_input.c
         sources/ipc_management.c
         sources/ipc_creation.c
-        sources/ipc_closing.c)
+        sources/ipc_closing.c sources/player_management.c sources/game.c)
 
 target_link_libraries(Lem_IPC pthread rt)

@@ -7,6 +7,7 @@
 
 # define SHM_MAP_NAME "game_map"
 # define SEM_NAME "/game_sem"
+# define SEM_DEFAULT_VALUE 1
 # define MQ_NAME "/game_mq"
 
 # include <stdio.h>
@@ -45,5 +46,9 @@ void	close_ipcs(t_ipcs *ipcs);
 void	close_shm(t_ipcs *ipcs);
 void	close_sem(t_ipcs *ipcs);
 void	close_mq(t_ipcs *ipcs);
+
+void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number);
+
+void	find_starting_place(t_player *player);
 
 #endif

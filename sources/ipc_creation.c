@@ -33,7 +33,7 @@ void	create_sem(t_ipcs *ipcs)
 {
 	sem_t *sem;
 
-	sem = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0777, 0);
+	sem = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0777, SEM_DEFAULT_VALUE);
 	if (sem == SEM_FAILED && errno == EEXIST)
 		sem = sem_open(SEM_NAME, 0);
 	else
