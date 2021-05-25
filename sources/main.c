@@ -1,4 +1,4 @@
-#include "lem-ipc.h"
+#include "lem_ipc.h"
 
 int main(int ac, char **av)
 {

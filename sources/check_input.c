@@ -1,4 +1,4 @@
-#include "lem-ipc.h"
+#include "lem_ipc.h"
 
 void check_input(int ac, char **av)
 {

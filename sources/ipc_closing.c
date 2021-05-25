@@ -1,4 +1,4 @@
-#include "lem-ipc.h"
+#include "lem_ipc.h"
 
 void	close_shm(t_ipcs *ipcs)
 {

@@ -28,6 +28,12 @@ typedef struct s_ipcs
 	mqd_t	mq;
 }		t_ipcs;
 
+typedef struct s_pos
+{
+	int x;
+	int y;
+}		t_pos;
+
 typedef struct s_player
 {
 	int		team_number;
@@ -49,6 +55,7 @@ void	close_mq(t_ipcs *ipcs);
 
 void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number);
 
+t_pos	get_start_player_position(void);
 void	find_starting_place(t_player *player);
 
 #endif
