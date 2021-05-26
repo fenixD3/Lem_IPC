@@ -8,6 +8,7 @@ void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number)
 {
 	player->team_number = team_number;
 	player->ipcs = ipcs;
+	/// TODO add logger
 }
 
 t_pos	get_start_player_position(void)

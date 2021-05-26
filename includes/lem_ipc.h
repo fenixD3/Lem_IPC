@@ -20,6 +20,8 @@
 # include <semaphore.h>
 # include <mqueue.h>
 
+# include "logger.h"
+
 typedef struct s_ipcs
 {
 	int		shm_fd;
@@ -36,8 +38,9 @@ typedef struct s_pos
 
 typedef struct s_player
 {
-	int		team_number;
-	t_ipcs	*ipcs;
+	int			team_number;
+	t_ipcs		*ipcs;
+	t_logger	*logger;
 }		t_player;
 
 void	check_input(int ac, char **av);
