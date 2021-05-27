@@ -28,6 +28,11 @@ void	close_shm(t_ipcs *ipcs)
 
 void	close_sem(t_ipcs *ipcs)
 {
+	if (sem_close(ipcs->sem) == -1)
+	{
+		perror("sem_close");
+		exit(EXIT_FAILURE);
+	}
 	if (sem_unlink(SEM_NAME) == -1)
 	{
 		perror("sem_unlink");
