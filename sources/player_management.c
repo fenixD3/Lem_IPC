@@ -18,9 +18,9 @@ t_pos	get_start_player_position(void)
 
 	srand(time(NULL));
 	position_x = BEGIN_RAND_DIAPASON +
-				 (int)(END_RAND_DIAPASON * rand() / (RAND_MAX + 1.));
+			 (int)((float)(END_RAND_DIAPASON - 1) * rand() / (RAND_MAX + 1.));
 	position_y = BEGIN_RAND_DIAPASON +
-				 (int)(END_RAND_DIAPASON * rand() / (RAND_MAX + 1.));
+			 (int)((float)(END_RAND_DIAPASON - 1) * rand() / (RAND_MAX + 1.));
 	return (t_pos){position_x, position_y};
 }
 
@@ -33,17 +33,16 @@ void	find_starting_place(t_player *player)
 	player_position = get_start_player_position();
 	sem_wait(player->ipcs->sem);
 	x = -1;
-	while (++x < MAP_X)
+	while (++x < (MAP_X * MAP_Y))
 	{
 		y = -1;
 		while (++y < MAP_Y)
 		{
-			if (x == player_position.x && y == player_position.y)
-			{
-				if (*(player->ipcs->shm_addr + (x + y)) != 0)
+			if (x / MAP_X == player_position.x && y == player_position.y)
+				if (*(player->ipcs->shm_addr + (x + y)) == 0)
 					*(player->ipcs->shm_addr + (x + y)) = 1;
-			}
 		}
+		x += y - 1;
 	}
 	sem_post(player->ipcs->sem);
 }

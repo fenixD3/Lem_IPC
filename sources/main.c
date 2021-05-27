@@ -32,9 +32,9 @@ int main(int ac, char **av)
 
 	check_input(ac, av);
 	create_ipcs(&ipcs);
+	fill_player_info(&player, &ipcs, atoi(av[1]));
+	find_starting_place(&player);
 	print_shm(&ipcs); /// tests
 	close_ipcs(&ipcs);
-//	fill_player_info(&player, &ipcs, atoi(av[1]));
 	return (EXIT_SUCCESS);
 }
-//0x7efe4ffa1000
