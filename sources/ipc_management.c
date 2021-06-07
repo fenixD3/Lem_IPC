@@ -1,10 +1,11 @@
 #include "lem_ipc.h"
+#include "ipc_management.h"
 
 void	create_ipcs(t_ipcs *ipcs)
 {
-	create_shm(ipcs);
-	create_sem(ipcs);
-	create_mq(ipcs);
+	ipcs->shm_addr = get_shm(SHM_MAP_NAME, MAP_SIZE);
+	ipcs->sem = create_sem(SEM_NAME);
+	ipcs->mq = create_mq(MQ_NAME);
 }
 
 bool	close_ipcs(t_ipcs *ipcs)

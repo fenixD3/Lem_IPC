@@ -24,41 +24,37 @@
 
 typedef struct s_ipcs
 {
-	int		shm_fd;
 	char	*shm_addr;
 	sem_t	*sem;
 	mqd_t	mq;
-}		t_ipcs;
+} t_ipcs;
 
 typedef struct s_pos
 {
 	int x;
 	int y;
-}		t_pos;
+} t_pos;
 
 typedef struct s_player
 {
 	int			team_number;
 	t_ipcs		*ipcs;
 	t_logger	*logger;
-}		t_player;
+} t_player;
 
-void	check_input(int ac, char **av);
+void check_input(int ac, char **av);
 
-void	create_ipcs(t_ipcs *ipcs);
-void	create_shm(t_ipcs *ipcs);
-void	create_sem(t_ipcs *ipcs);
-void	create_mq(t_ipcs *ipcs);
+void create_ipcs(t_ipcs *ipcs);
 
-bool	close_ipcs(t_ipcs *ipcs);
-bool	close_shm(t_ipcs *ipcs);
-bool	close_sem(t_ipcs *ipcs);
-bool	close_mq(t_ipcs *ipcs);
-void	destroy_ipcs(t_ipcs *ipcs);
+bool close_ipcs(t_ipcs *ipcs);
+bool close_shm(t_ipcs *ipcs);
+bool close_sem(t_ipcs *ipcs);
+bool close_mq(t_ipcs *ipcs);
+void destroy_ipcs(t_ipcs *ipcs);
 
-void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number);
+void fill_player_info(t_player *player, t_ipcs *ipcs, int team_number);
 
-t_pos	get_start_player_position(void);
-void	find_starting_place(t_player *player);
+t_pos get_start_player_position(void);
+void find_starting_place(t_player *player);
 
 #endif

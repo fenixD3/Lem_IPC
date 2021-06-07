@@ -1,5 +1,7 @@
 #include "lem_ipc.h"
 #include <time.h>
+#include "logger.h"
+#include <stdio.h>
 
 #define BEGIN_RAND_DIAPASON 0
 #define END_RAND_DIAPASON MAP_X
@@ -8,12 +10,9 @@ void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number)
 {
 	player->team_number = team_number;
 	player->ipcs = ipcs;
-	if (!(player->logger = malloc(sizeof(t_logger))))
-	{
-		perror("malloc_for_logger");
-		exit(EXIT_FAILURE);
-	}
-	player->logger->files_info = create_log();
+	player->logger = create_logger();
+	create_log_file(&player->logger->files_info);
+	write_to_log(player->logger, );
 }
 
 t_pos	get_start_player_position(void)
