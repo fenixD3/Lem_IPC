@@ -8,14 +8,14 @@ void print_shm(t_ipcs *ipcs)
 
 	sem_wait(ipcs->sem);
 	x = -1;
-	while (++x < (MAP_X * MAP_Y))
+	while (++x < MAP_SIZE)
 	{
 		printf("%p: ", ipcs->shm_addr + x);
 		y = -1;
-		while (++y < MAP_Y)
+		while (++y < MAP_X)
 		{
 			printf("[%d]", *(ipcs->shm_addr + (x + y)));
-			if (y + 1 == MAP_Y)
+			if (y + 1 == MAP_X)
 				printf("\n");
 			else
 				printf(" ");
@@ -35,6 +35,6 @@ int main(int ac, char **av)
 	fill_player_info(&player, &ipcs, atoi(av[1]));
 	find_starting_place(&player);
 	print_shm(&ipcs); /// tests
-	close_ipcs(&ipcs);
+	destroy_ipcs(&ipcs);
 	return (EXIT_SUCCESS);
 }

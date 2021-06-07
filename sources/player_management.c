@@ -8,7 +8,12 @@ void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number)
 {
 	player->team_number = team_number;
 	player->ipcs = ipcs;
-	/// TODO add logger
+	if (!(player->logger = malloc(sizeof(t_logger))))
+	{
+		perror("malloc_for_logger");
+		exit(EXIT_FAILURE);
+	}
+	player->logger->files_info = create_log();
 }
 
 t_pos	get_start_player_position(void)
@@ -33,10 +38,10 @@ void	find_starting_place(t_player *player)
 	player_position = get_start_player_position();
 	sem_wait(player->ipcs->sem);
 	x = -1;
-	while (++x < (MAP_X * MAP_Y))
+	while (++x < MAP_SIZE)
 	{
 		y = -1;
-		while (++y < MAP_Y)
+		while (++y < MAP_X)
 		{
 			if (x / MAP_X == player_position.x && y == player_position.y)
 				if (*(player->ipcs->shm_addr + (x + y)) == 0)
