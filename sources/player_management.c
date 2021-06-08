@@ -12,7 +12,7 @@ void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number)
 	player->ipcs = ipcs;
 	player->logger = create_logger();
 	create_log_file(&player->logger->files_info);
-	write_to_log(player->logger, );
+	write_to_log(player->logger, "New player with PID %d in %d team\n", getpid(), team_number);
 }
 
 t_pos	get_start_player_position(void)

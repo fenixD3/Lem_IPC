@@ -12,7 +12,7 @@ add_executable(Lem_IPC
         sources/check_input.c
         sources/ipc_management.c
         sources/ipc_creation.c
-        sources/ipc_closing.c
+        sources/ipc_freeing.c
         sources/player_management.c
         sources/game.c
         sources/logger/logger.c

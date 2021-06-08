@@ -28,6 +28,8 @@ typedef struct s_logger
 t_logger *create_logger();
 void create_log_file(t_files **files_info);
 
-void write_to_log(t_logger *logger, const char *to_log);
+void write_to_log(t_logger *logger, const char *format, ...);
+
+void destroy_logger(t_logger *logger);
 
 #endif

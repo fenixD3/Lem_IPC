@@ -1,19 +1,23 @@
-#include <unistd.h>
 #include "logger.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
+#include <unistd.h>
 
-void write_to_log(t_logger *logger, const char *to_log)
+void write_to_log(t_logger *logger, const char *format, ...)
 {
 	size_t len;
 	t_files *curr_log;
+	va_list args;
 
-	len = strlen(to_log) + 1;
 	sem_wait(logger->sem);
+	va_start(args, format);
+	len = vsprintf(logger->buff, format, args);
+	va_end(args);
 	curr_log = logger->files_info;
-	while (curr_log && curr_log->is_writable)
+	while (curr_log && curr_log->next && curr_log->is_writable)
 	{
-		if (*curr_log->available_space > len)
+		if (*curr_log->available_space < len)
 		{
 			create_log_file(&logger->files_info);
 			curr_log = logger->files_info;
@@ -21,6 +25,7 @@ void write_to_log(t_logger *logger, const char *to_log)
 		}
 		curr_log = curr_log->next;
 	}
-	sprintf(curr_log->file_mapped, "%s\n", to_log);
+	snprintf(curr_log->file_mapped + (LOG_FILE_SIZE - *curr_log->available_space), len + 1, "%s", logger->buff);
+	*curr_log->available_space -= len;
 	sem_post(logger->sem);
 }

@@ -35,6 +35,10 @@ int main(int ac, char **av)
 	fill_player_info(&player, &ipcs, atoi(av[1]));
 	find_starting_place(&player);
 	print_shm(&ipcs); /// tests
+	sleep(3);
+	close_ipcs(&ipcs);
 	destroy_ipcs(&ipcs);
+	write_to_log(player.logger, "Destroy logger\n");
+	destroy_logger(player.logger);
 	return (EXIT_SUCCESS);
 }

@@ -47,9 +47,8 @@ void check_input(int ac, char **av);
 void create_ipcs(t_ipcs *ipcs);
 
 bool close_ipcs(t_ipcs *ipcs);
-bool close_shm(t_ipcs *ipcs);
-bool close_sem(t_ipcs *ipcs);
-bool close_mq(t_ipcs *ipcs);
+bool close_sem(sem_t **sem);
+bool close_mq(mqd_t mq);
 void destroy_ipcs(t_ipcs *ipcs);
 
 void fill_player_info(t_player *player, t_ipcs *ipcs, int team_number);
