@@ -17,7 +17,7 @@ void write_to_log(t_logger *logger, const char *format, ...)
 	curr_log = logger->files_info;
 	while (curr_log && curr_log->next && curr_log->is_writable)
 	{
-		if (*curr_log->available_space < len)
+		if (*curr_log->available_shm_space < len)
 		{
 			create_log_file(&logger->files_info);
 			curr_log = logger->files_info;
@@ -25,7 +25,7 @@ void write_to_log(t_logger *logger, const char *format, ...)
 		}
 		curr_log = curr_log->next;
 	}
-	snprintf(curr_log->file_mapped + (LOG_FILE_SIZE - *curr_log->available_space), len + 1, "%s", logger->buff);
-	*curr_log->available_space -= len;
+	snprintf(curr_log->file_mapped + (LOG_FILE_SIZE - *curr_log->available_shm_space), len + 1, "%s", logger->buff);
+	*curr_log->available_shm_space -= len;
 	sem_post(logger->sem);
 }

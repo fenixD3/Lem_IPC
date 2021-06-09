@@ -20,8 +20,7 @@ char *get_shm(const char *shm_name, size_t shm_size)
 		perror("ftruncate");
 		exit(EXIT_FAILURE);
 	}
-	shm_addr = mmap(NULL, shm_size, PROT_WRITE | PROT_READ,
-					MAP_SHARED, shm_fd, 0);
+	shm_addr = mmap(NULL, shm_size, PROT_WRITE | PROT_READ, MAP_SHARED, shm_fd, 0);
 	if (shm_addr == MAP_FAILED)
 	{
 		perror("mmap");

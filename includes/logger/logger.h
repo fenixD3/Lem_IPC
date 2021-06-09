@@ -6,9 +6,9 @@
 
 typedef struct s_files
 {
-	char file_name[30];
+	char *file_shm_name;
 	char *file_mapped;
-	size_t *available_space;
+	size_t *available_shm_space;
 	bool is_writable;
 	struct s_files *next;
 } t_files;
@@ -21,6 +21,8 @@ typedef struct s_logger
 } t_logger;
 
 #define LOG_PATH "./log_"
+#define LOG_SHM_FILE_NAME "/log_shm_name"
+#define LOG_FILE_NAME_SIZE 30
 #define LOG_FILE_SIZE (256 * getpagesize())
 #define LOG_SEM_NAME "/log_sem"
 #define LOG_SHM_SIZE_NAME "/log_shm_size"
