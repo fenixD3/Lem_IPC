@@ -12,18 +12,25 @@ bool	close_ipcs(t_ipcs *ipcs)
 {
 	bool is_error;
 
-	is_error = close_sem(&ipcs->sem);
-	is_error = (is_error) ? is_error : close_mq(ipcs->mq);
-	return (is_error);
+	is_error = false;
+	if (close_sem(&ipcs->sem))
+		is_error = true;
+	if (close_mq(ipcs->mq))
+		is_error = true;
+	return is_error;
 }
 
 void	destroy_ipcs(t_ipcs *ipcs)
 {
 	bool is_error;
 
-	is_error = destroy_shm((void **) &ipcs->shm_addr, SHM_MAP_NAME, MAP_SIZE);
-	is_error = (is_error) ? is_error : destroy_sem(SEM_NAME);
-	is_error = (is_error) ? is_error : destroy_mq(MQ_NAME);
+	is_error = false;
+	if (destroy_shm((void **) &ipcs->shm_addr, SHM_MAP_NAME, MAP_SIZE))
+		is_error = true;
+	if (destroy_sem(SEM_NAME))
+		is_error = true;
+	if (destroy_mq(MQ_NAME))
+		is_error = true;
 	if (is_error)
 		exit(EXIT_FAILURE);
 }

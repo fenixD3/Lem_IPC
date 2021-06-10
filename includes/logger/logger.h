@@ -6,9 +6,9 @@
 
 typedef struct s_files
 {
-	char *file_shm_name;
+	char *file_name_shm;
 	char *file_mapped;
-	size_t *available_shm_space;
+	size_t *available_space_shm;
 	bool is_writable;
 	struct s_files *next;
 } t_files;

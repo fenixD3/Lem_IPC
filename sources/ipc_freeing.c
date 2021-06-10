@@ -49,7 +49,7 @@ bool destroy_sem(const char *sem_name)
 	bool is_error;
 
 	is_error = false;
-	if (sem_unlink(SEM_NAME) == -1)
+	if (sem_unlink(sem_name) == -1)
 	{
 		perror("sem_unlink");
 		is_error = true;
@@ -65,6 +65,19 @@ bool destroy_mq(const char *mq_name)
 	if (mq_unlink(mq_name) == -1)
 	{
 		perror("mq_unlink");
+		is_error = true;
+	}
+	return is_error;
+}
+
+bool remove_file(const char *file_name)
+{
+	bool is_error;
+
+	is_error = false;
+	if (unlink(file_name) == -1)
+	{
+		perror("unlink");
 		is_error = true;
 	}
 	return is_error;

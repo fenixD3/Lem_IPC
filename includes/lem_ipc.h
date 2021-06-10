@@ -10,7 +10,7 @@
 #define SEM_DEFAULT_VALUE 1
 #define MQ_NAME "/game_mq"
 
-#define SHM_PROCESS_NAME "/process"
+#define FILE_PROCESS_NAME "./process"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -42,7 +42,7 @@ typedef struct s_player
 	int team_number;
 	t_ipcs *ipcs;
 	t_logger *logger;
-	int *process_count_shm;
+	int *process_count_mapped;
 } t_player;
 
 void check_input(int ac, char **av);
