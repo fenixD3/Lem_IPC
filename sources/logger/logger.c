@@ -44,42 +44,44 @@ void create_log_file(t_files **files_info)
 	if (*new_file_info->file_shm_name == '\0')
 		sprintf(new_file_info->file_shm_name, "%s%s%s", LOG_PATH, ctime(&curr_time), ".txt");
 	new_file_info->available_shm_space = (size_t *)get_shm(LOG_SHM_SIZE_NAME, sizeof(size_t));
-	if ((file_fd = open(new_file_info->file_shm_name, O_CREAT | O_EXCL | O_RDWR, 0644)) == -1)
-	{
-		if (errno == EEXIST)
-		{
-			if ((file_fd = open(new_file_info->file_shm_name, O_CREAT | O_RDWR, 0644)) == -1)
-			{
-				perror("open_log");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else if (file_fd == -1)
-		{
-			perror("create_log");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		if (ftruncate(file_fd, LOG_FILE_SIZE) == -1)
-		{
-			perror("ftruncate_log_file");
-			exit(EXIT_FAILURE);
-		}
+	if (get_or_create_mapped_file(new_file_info->file_shm_name, (void **)&new_file_info->file_mapped))
 		*new_file_info->available_shm_space = LOG_FILE_SIZE;
-	}
-	new_file_info->file_mapped = mmap(0, LOG_FILE_SIZE, PROT_WRITE | PROT_READ, MAP_SHARED, file_fd, 0);
-	if (new_file_info->file_mapped == MAP_FAILED)
-	{
-		perror("mmap_log_file");
-		exit(EXIT_FAILURE);
-	}
-	if (close(file_fd) == -1)
-	{
-		perror("close_log_fd");
-		exit(EXIT_FAILURE);
-	}
+//	if ((file_fd = open(new_file_info->file_shm_name, O_CREAT | O_EXCL | O_RDWR, 0644)) == -1)
+//	{
+//		if (errno == EEXIST)
+//		{
+//			if ((file_fd = open(new_file_info->file_shm_name, O_CREAT | O_RDWR, 0644)) == -1)
+//			{
+//				perror("open_log");
+//				exit(EXIT_FAILURE);
+//			}
+//		}
+//		else if (file_fd == -1)
+//		{
+//			perror("create_log");
+//			exit(EXIT_FAILURE);
+//		}
+//	}
+//	else
+//	{
+//		if (ftruncate(file_fd, LOG_FILE_SIZE) == -1)
+//		{
+//			perror("ftruncate_log_file");
+//			exit(EXIT_FAILURE);
+//		}
+//		*new_file_info->available_shm_space = LOG_FILE_SIZE;
+//	}
+//	new_file_info->file_mapped = mmap(0, LOG_FILE_SIZE, PROT_WRITE | PROT_READ, MAP_SHARED, file_fd, 0);
+//	if (new_file_info->file_mapped == MAP_FAILED)
+//	{
+//		perror("mmap_log_file");
+//		exit(EXIT_FAILURE);
+//	}
+//	if (close(file_fd) == -1)
+//	{
+//		perror("close_log_fd");
+//		exit(EXIT_FAILURE);
+//	}
 	new_file_info->is_writable = true;
 	add_log_file_to_chain(files_info, new_file_info);
 }

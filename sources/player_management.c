@@ -2,6 +2,7 @@
 #include <time.h>
 #include "logger.h"
 #include <stdio.h>
+#include "ipc_management.h"
 
 #define BEGIN_RAND_DIAPASON 0
 #define END_RAND_DIAPASON MAP_X
@@ -10,6 +11,7 @@ void	fill_player_info(t_player *player, t_ipcs *ipcs, int team_number)
 {
 	player->team_number = team_number;
 	player->ipcs = ipcs;
+//	player->process_count_shm = (int *)get_shm(SHM_PROCESS_NAME, sizeof(int));
 	player->logger = create_logger();
 	create_log_file(&player->logger->files_info);
 	write_to_log(player->logger, "New player with PID %d in %d team\n", getpid(), team_number);

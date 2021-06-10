@@ -1,26 +1,28 @@
 #ifndef LEM_IPC_H
-# define LEM_IPC_H
+#define LEM_IPC_H
 
-# define TEAM_COUNT 4
-# define MAP_X 20
-# define MAP_SIZE MAP_X * MAP_X
+#define TEAM_COUNT 4
+#define MAP_X 20
+#define MAP_SIZE MAP_X * MAP_X
 
-# define SHM_MAP_NAME "game_map"
-# define SEM_NAME "/game_sem"
-# define SEM_DEFAULT_VALUE 1
-# define MQ_NAME "/game_mq"
+#define SHM_MAP_NAME "game_map"
+#define SEM_NAME "/game_sem"
+#define SEM_DEFAULT_VALUE 1
+#define MQ_NAME "/game_mq"
 
-# include <stdio.h>
-# include <stdbool.h>
-# include <stdlib.h>
-# include <errno.h>
-# include <unistd.h>
-# include <sys/mman.h>
-# include <fcntl.h>
-# include <semaphore.h>
-# include <mqueue.h>
+#define SHM_PROCESS_NAME "/process"
 
-# include "logger.h"
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <semaphore.h>
+#include <mqueue.h>
+
+#include "logger.h"
 
 typedef struct s_ipcs
 {
@@ -37,9 +39,10 @@ typedef struct s_pos
 
 typedef struct s_player
 {
-	int			team_number;
-	t_ipcs		*ipcs;
-	t_logger	*logger;
+	int team_number;
+	t_ipcs *ipcs;
+	t_logger *logger;
+	int *process_count_shm;
 } t_player;
 
 void check_input(int ac, char **av);
