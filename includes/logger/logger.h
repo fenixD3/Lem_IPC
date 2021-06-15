@@ -27,11 +27,11 @@ typedef struct s_logger
 #define LOG_SEM_NAME "/log_sem"
 #define LOG_SHM_SIZE_NAME "/log_shm_size"
 
-t_logger *create_logger();
-void create_log_file(t_files **files_info);
+t_logger *create_logger(const int process_count);
+void create_log_file(t_files **files_info, const int process_count);
 
-void write_to_log(t_logger *logger, const char *format, ...);
+void write_to_log(t_logger *logger, const int process_count, const char *format, ...);
 
-void destroy_logger(t_logger *logger);
+void destroy_logger(t_logger *logger, const int process_count);
 
 #endif

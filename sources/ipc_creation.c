@@ -1,12 +1,13 @@
 #include "lem_ipc.h"
 #include "ipc_management.h"
 
-char *get_shm(const char *shm_name, size_t shm_size)
+char *get_shm(const char *shm_name, size_t shm_size, const int process_count)
 {
 	int		shm_fd;
 	char	*shm_addr;
 
-	//shm_unlink(shm_name);
+	if (process_count == 1)
+		shm_unlink(shm_name);
 	shm_fd = shm_open(shm_name, O_CREAT | O_RDWR | O_EXCL, 0644);
 	if (shm_fd == -1 && errno == EEXIST)
 		shm_fd = shm_open(shm_name, O_CREAT | O_RDWR, 0644);
@@ -34,11 +35,12 @@ char *get_shm(const char *shm_name, size_t shm_size)
 	return shm_addr;
 }
 
-sem_t *create_sem(const char *sem_name)
+sem_t *get_sem(const char *sem_name, const int process_count)
 {
 	sem_t *sem;
 
-	//sem_unlink(sem_name);
+	if (process_count == 1)
+		sem_unlink(sem_name);
 	sem = sem_open(sem_name, O_CREAT | O_EXCL, 0644, SEM_DEFAULT_VALUE);
 	if (sem == SEM_FAILED && errno == EEXIST)
 		sem = sem_open(sem_name, 0);
@@ -50,11 +52,12 @@ sem_t *create_sem(const char *sem_name)
 	return sem;
 }
 
-mqd_t create_mq(const char *mq_name)
+mqd_t get_mq(const char *mq_name, const int process_count)
 {
 	mqd_t mq;
 
-	//mq_unlink(mq_name);
+	if (process_count == 1)
+		mq_unlink(mq_name);
 	mq = mq_open(mq_name, O_RDWR | O_CREAT | O_EXCL, 0644, NULL);
 	if (mq == (mqd_t)-1 && errno == EEXIST)
 		mq = mq_open(mq_name, O_RDWR, 0644, NULL);

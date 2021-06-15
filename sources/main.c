@@ -1,45 +1,32 @@
 #include "lem_ipc.h"
-
+#include <ctype.h>
 
 void print_shm(t_ipcs *ipcs)
 {
-	int		x;
-	int		y;
-
 	sem_wait(ipcs->sem);
-	x = -1;
-	while (++x < MAP_SIZE)
+	for (int x = 0; x < MAP_SIZE; x += MAP_X)
 	{
 		printf("%p: ", ipcs->shm_addr + x);
-		y = -1;
-		while (++y < MAP_X)
+		for (int y = 0; y < MAP_X; ++y)
 		{
-			printf("[%d]", *(ipcs->shm_addr + (x + y)));
+			printf("%c", *(ipcs->shm_addr + (x + y)));
 			if (y + 1 == MAP_X)
 				printf("\n");
 			else
 				printf(" ");
 		}
-		x += y - 1;
 	}
 	sem_post(ipcs->sem);
 }
 
 int main(int ac, char **av)
 {
-	t_ipcs		ipcs;
 	t_player	player;
 
 	check_input(ac, av);
-	create_ipcs(&ipcs);
-	fill_player_info(&player, &ipcs, atoi(av[1]));
-	find_starting_place(&player);
-	print_shm(&ipcs); /// tests
-	printf("%s\n", player.logger->files_info->file_name_shm);
-	sleep(120);
-	close_ipcs(&ipcs);
-	destroy_ipcs(&ipcs);
-	write_to_log(player.logger, "Destroy logger\n");
-	destroy_logger(player.logger);
+	fill_player_info(&player, atoi(av[1]));
+//	print_shm(player.ipcs); /// tests
+//	sleep(30);
+	delete_player(&player);
 	return (EXIT_SUCCESS);
 }

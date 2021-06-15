@@ -3,9 +3,9 @@
 
 # include <mqueue.h>
 
-char *get_shm(const char *shm_name, size_t shm_size);
-sem_t *create_sem(const char *sem_name);
-mqd_t create_mq(const char *mq_name);
+char *get_shm(const char *shm_name, size_t shm_size, const int process_count);
+sem_t *get_sem(const char *sem_name, const int process_count);
+mqd_t get_mq(const char *mq_name, const int process_count);
 
 bool get_or_create_mapped_file(const char *file_name, size_t file_size, void **file_mapped);
 

@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-void write_to_log(t_logger *logger, const char *format, ...)
+void write_to_log(t_logger *logger, const int process_count, const char *format, ...)
 {
 	size_t len;
 	t_files *curr_log;
@@ -19,7 +19,7 @@ void write_to_log(t_logger *logger, const char *format, ...)
 	{
 		if (*curr_log->available_space_shm < len)
 		{
-			create_log_file(&logger->files_info);
+			create_log_file(&logger->files_info, process_count);
 			curr_log = logger->files_info;
 			break;
 		}

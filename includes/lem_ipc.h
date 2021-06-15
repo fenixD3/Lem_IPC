@@ -10,7 +10,7 @@
 #define SEM_DEFAULT_VALUE 1
 #define MQ_NAME "/game_mq"
 
-#define FILE_PROCESS_NAME "./process"
+#define FILE_PROCESS_NAME "./process.txt"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -40,6 +40,7 @@ typedef struct s_pos
 typedef struct s_player
 {
 	int team_number;
+	t_pos position;
 	t_ipcs *ipcs;
 	t_logger *logger;
 	int *process_count_mapped;
@@ -47,16 +48,19 @@ typedef struct s_player
 
 void check_input(int ac, char **av);
 
-void create_ipcs(t_ipcs *ipcs);
+t_ipcs *create_ipcs(const int process_count);
 
 bool close_ipcs(t_ipcs *ipcs);
 bool close_sem(sem_t **sem);
 bool close_mq(mqd_t mq);
-void destroy_ipcs(t_ipcs *ipcs);
+void destroy_ipcs(t_ipcs *ipcs, const int process_count);
 
-void fill_player_info(t_player *player, t_ipcs *ipcs, int team_number);
-
+void fill_player_info(t_player *player, int team_number);
 t_pos get_start_player_position(void);
 void find_starting_place(t_player *player);
+void delete_player(t_player *player);
+
+bool check_death(const t_player *player);
+bool check_occupied_cell(const char *shm_addr, const int x, const int y);
 
 #endif

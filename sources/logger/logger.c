@@ -9,7 +9,7 @@
 
 #include "ipc_management.h"
 
-t_logger *create_logger()
+t_logger *create_logger(const int process_count)
 {
 	t_logger *logger;
 
@@ -18,7 +18,7 @@ t_logger *create_logger()
 		perror("malloc_for_logger");
 		exit(EXIT_FAILURE);
 	}
-	logger->sem = create_sem(LOG_SEM_NAME);
+	logger->sem = get_sem(LOG_SEM_NAME, process_count);
 	logger->files_info = NULL;
 	return logger;
 }
@@ -29,7 +29,7 @@ static void add_log_file_to_chain(t_files **files_info, t_files *new_file_info)
 	*files_info = new_file_info;
 }
 
-void create_log_file(t_files **files_info)
+void create_log_file(t_files **files_info, const int process_count)
 {
 	t_files		*new_file_info;
 
@@ -39,21 +39,23 @@ void create_log_file(t_files **files_info)
 		exit(EXIT_FAILURE);
 	}
 	const time_t curr_time = time(NULL);
-	new_file_info->file_name_shm = get_shm(LOG_SHM_FILE_NAME, LOG_FILE_NAME_SIZE);
+	new_file_info->file_name_shm = get_shm(LOG_SHM_FILE_NAME, LOG_FILE_NAME_SIZE, process_count);
 	if (*new_file_info->file_name_shm == '\0')
 		sprintf(new_file_info->file_name_shm, "%s%s%s", LOG_PATH, ctime(&curr_time), ".txt");
-	new_file_info->available_space_shm = (size_t *)get_shm(LOG_SHM_SIZE_NAME, sizeof(size_t));
+	new_file_info->available_space_shm = (size_t *)get_shm(LOG_SHM_SIZE_NAME, sizeof(size_t), process_count);
 	if (get_or_create_mapped_file(new_file_info->file_name_shm, LOG_FILE_SIZE, (void **)&new_file_info->file_mapped))
 		*new_file_info->available_space_shm = LOG_FILE_SIZE;
 	new_file_info->is_writable = true;
 	add_log_file_to_chain(files_info, new_file_info);
 }
 
-void destroy_logger(t_logger *logger)
+void destroy_logger(t_logger *logger, const int process_count)
 {
 	bool is_error;
 	t_files *curr_file;
 
+	if (process_count != 0)
+		return;
 	is_error = false;
 	curr_file = logger->files_info;
 	while(curr_file)
