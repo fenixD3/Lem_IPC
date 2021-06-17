@@ -32,6 +32,6 @@ void create_log_file(t_files **files_info, const int process_count);
 
 void write_to_log(t_logger *logger, const int process_count, const char *format, ...);
 
-void destroy_logger(t_logger *logger, const int process_count);
+void destroy_logger(t_logger *logger);
 
 #endif

@@ -8,7 +8,7 @@ static void init_shm_map(char *shm_addr, const char filler)
 			*(shm_addr + (x + y)) = filler;
 }
 
-t_ipcs *create_ipcs(const int process_count)
+t_ipcs *create_ipcs(const int process_count, const int team_players)
 {
 	t_ipcs *ipcs;
 
@@ -21,11 +21,21 @@ t_ipcs *create_ipcs(const int process_count)
 	if (process_count == 1)
 		init_shm_map(ipcs->shm_addr, '.');
 	ipcs->sem = get_sem(SEM_NAME, process_count);
-	ipcs->mq = get_mq(MQ_NAME, process_count);
+	ipcs->mq = get_mq(MQ_NAME, process_count, team_players);
+	if (!(ipcs->mq_attrs = malloc(sizeof(t_mq_attr))))
+	{
+		perror("malloc_mq_attrs");
+		exit(EXIT_FAILURE);
+	}
+	if (mq_getattr(ipcs->mq, ipcs->mq_attrs) == -1)
+	{
+		perror("mq_getattr");
+		exit(EXIT_FAILURE);
+	}
 	return ipcs;
 }
 
-bool	close_ipcs(t_ipcs *ipcs)
+bool close_ipcs(t_ipcs *ipcs)
 {
 	bool is_error;
 
@@ -37,19 +47,28 @@ bool	close_ipcs(t_ipcs *ipcs)
 	return is_error;
 }
 
-void destroy_ipcs(t_ipcs *ipcs, const int process_count)
+void destroy_ipcs(t_ipcs *ipcs, const int team_players)
 {
 	bool is_error;
 
-	if (process_count != 0)
-		return;
 	is_error = false;
 	if (destroy_shm((void **) &ipcs->shm_addr, SHM_MAP_NAME, MAP_SIZE))
 		is_error = true;
 	if (destroy_sem(SEM_NAME))
 		is_error = true;
-	if (destroy_mq(MQ_NAME))
-		is_error = true;
+	destroy_mq(MQ_NAME, TEAM_COUNT);
 	if (is_error)
 		exit(EXIT_FAILURE);
+}
+
+char *create_msg_buff(const long max_msg_size)
+{
+	char *buff;
+
+	if (!(buff = malloc(sizeof(char) * (max_msg_size + 1))))
+	{
+		perror("malloc_mq_buff");
+		exit(EXIT_FAILURE);
+	}
+	return buff;
 }

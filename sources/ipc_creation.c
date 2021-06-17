@@ -1,5 +1,6 @@
 #include "lem_ipc.h"
 #include "ipc_management.h"
+#include <string.h>
 
 char *get_shm(const char *shm_name, size_t shm_size, const int process_count)
 {
@@ -52,15 +53,22 @@ sem_t *get_sem(const char *sem_name, const int process_count)
 	return sem;
 }
 
-mqd_t get_mq(const char *mq_name, const int process_count)
+mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team_players)
 {
 	mqd_t mq;
+	char *mq_name;
 
+	if ((mq_name = malloc(sizeof(char) * (strlen(mq_name_prefix) + 3))) == NULL)
+	{
+		perror("malloc_mq_name");
+		exit(EXIT_FAILURE);
+	}
+	sprintf(mq_name, "%s%s%d", mq_name_prefix, "_", team_players);
 	if (process_count == 1)
 		mq_unlink(mq_name);
-	mq = mq_open(mq_name, O_RDWR | O_CREAT | O_EXCL, 0644, NULL);
+	mq = mq_open(mq_name, O_RDWR | O_CREAT | O_EXCL | O_NONBLOCK, 0644, NULL);
 	if (mq == (mqd_t)-1 && errno == EEXIST)
-		mq = mq_open(mq_name, O_RDWR, 0644, NULL);
+		mq = mq_open(mq_name, O_RDWR | O_NONBLOCK, 0644, NULL);
 	else if (mq == (mqd_t)-1)
 	{
 		perror("mq_open");

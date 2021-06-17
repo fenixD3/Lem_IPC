@@ -1,4 +1,5 @@
 #include "lem_ipc.h"
+#include <string.h>
 
 bool close_sem(sem_t **sem)
 {
@@ -57,17 +58,20 @@ bool destroy_sem(const char *sem_name)
 	return is_error;
 }
 
-bool destroy_mq(const char *mq_name)
+void destroy_mq(const char *mq_name_prefix, const int team_count)
 {
-	bool is_error;
+	char *mq_name;
 
-	is_error = false;
-	if (mq_unlink(mq_name) == -1)
+	if ((mq_name = malloc(sizeof(char) * (strlen(mq_name_prefix) + 3))) == NULL)
 	{
-		perror("mq_unlink");
-		is_error = true;
+		perror("malloc_mq_name");
+		exit(EXIT_FAILURE);
 	}
-	return is_error;
+	for (int i = 1; i <= team_count; ++i)
+	{
+		sprintf(mq_name, "%s%s%d", mq_name_prefix, "_", i);
+		mq_unlink(mq_name_prefix);
+	}
 }
 
 bool remove_file(const char *file_name)

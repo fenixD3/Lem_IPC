@@ -7,12 +7,27 @@
 #define BEGIN_RAND_DIAPASON 0
 #define END_RAND_DIAPASON (MAP_X - 1)
 
+void init_player(t_player *player)
+{
+	player->team_number = -1;
+	player->team_players = 0;
+	player->position.x = -1;
+	player->position.y = -1;
+	player->ipcs = NULL;
+	player->msg_buff = NULL;
+	player->logger = NULL;
+	player->process_count_mapped = NULL;
+}
+
 void fill_player_info(t_player *player, int team_number)
 {
+	init_player(player);
 	get_or_create_mapped_file(FILE_PROCESS_NAME, sizeof(int), (void **)&player->process_count_mapped);
 	++*player->process_count_mapped;
 	player->team_number = team_number;
-	player->ipcs = create_ipcs(*player->process_count_mapped);
+	++player->team_players;
+	player->ipcs = create_ipcs(*player->process_count_mapped, player->team_players);
+	player->msg_buff = create_msg_buff(player->ipcs->mq_attrs->mq_msgsize);
 	player->logger = create_logger(*player->process_count_mapped);
 	create_log_file(&player->logger->files_info, *player->process_count_mapped);
 	write_to_log(player->logger, *player->process_count_mapped, "New player with PID %d in %d team\n", getpid(), team_number);
@@ -52,9 +67,9 @@ void delete_player(t_player *player)
 	close_ipcs(player->ipcs);
 	if (*player->process_count_mapped == 0)
 	{
-		destroy_ipcs(player->ipcs, *player->process_count_mapped);
+		destroy_ipcs(player->ipcs, 0);
 		write_to_log(player->logger, *player->process_count_mapped, "Destroy logger\n");
-		destroy_logger(player->logger, *player->process_count_mapped);
+		destroy_logger(player->logger);
 		unlink(FILE_PROCESS_NAME);
 	}
 }

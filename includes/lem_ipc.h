@@ -24,11 +24,14 @@
 
 #include "logger.h"
 
+typedef struct mq_attr t_mq_attr;
+
 typedef struct s_ipcs
 {
 	char	*shm_addr;
 	sem_t	*sem;
 	mqd_t	mq;
+	t_mq_attr *mq_attrs;
 } t_ipcs;
 
 typedef struct s_pos
@@ -40,27 +43,34 @@ typedef struct s_pos
 typedef struct s_player
 {
 	int team_number;
+	int team_players;
 	t_pos position;
 	t_ipcs *ipcs;
+	char *msg_buff;
 	t_logger *logger;
 	int *process_count_mapped;
 } t_player;
 
 void check_input(int ac, char **av);
 
-t_ipcs *create_ipcs(const int process_count);
+t_ipcs *create_ipcs(const int process_count, const int team_players);
 
 bool close_ipcs(t_ipcs *ipcs);
 bool close_sem(sem_t **sem);
 bool close_mq(mqd_t mq);
-void destroy_ipcs(t_ipcs *ipcs, const int process_count);
+void destroy_ipcs(t_ipcs *ipcs, const int team_players);
 
 void fill_player_info(t_player *player, int team_number);
+char *create_msg_buff(const long max_msg_size);
+void init_player(t_player *player);
 t_pos get_start_player_position(void);
 void find_starting_place(t_player *player);
 void delete_player(t_player *player);
 
 bool check_death(const t_player *player);
 bool check_occupied_cell(const char *shm_addr, const int x, const int y);
+
+void game_loop(t_player *player);
+bool get_message(t_player *player);
 
 #endif

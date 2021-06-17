@@ -49,13 +49,11 @@ void create_log_file(t_files **files_info, const int process_count)
 	add_log_file_to_chain(files_info, new_file_info);
 }
 
-void destroy_logger(t_logger *logger, const int process_count)
+void destroy_logger(t_logger *logger)
 {
 	bool is_error;
 	t_files *curr_file;
 
-	if (process_count != 0)
-		return;
 	is_error = false;
 	curr_file = logger->files_info;
 	while(curr_file)
