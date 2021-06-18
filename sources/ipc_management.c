@@ -19,7 +19,7 @@ t_ipcs *create_ipcs(const int process_count, const int team_players)
 	}
 	ipcs->shm_addr = get_shm(SHM_MAP_NAME, MAP_SIZE, process_count);
 	if (process_count == 1)
-		init_shm_map(ipcs->shm_addr, '.');
+		init_shm_map(ipcs->shm_addr, MAP_FILLER);
 	ipcs->sem = get_sem(SEM_NAME, process_count);
 	ipcs->mq = get_mq(MQ_NAME, process_count, team_players);
 	if (!(ipcs->mq_attrs = malloc(sizeof(t_mq_attr))))

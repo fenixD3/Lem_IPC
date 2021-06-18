@@ -12,6 +12,8 @@
 
 #define FILE_PROCESS_NAME "./process.txt"
 
+#define MAP_FILLER '.'
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -51,6 +53,14 @@ typedef struct s_player
 	int *process_count_mapped;
 } t_player;
 
+typedef enum e_direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+} t_direction;
+
 void check_input(int ac, char **av);
 
 t_ipcs *create_ipcs(const int process_count, const int team_players);
@@ -68,9 +78,18 @@ void find_starting_place(t_player *player);
 void delete_player(t_player *player);
 
 bool check_death(const t_player *player);
-bool check_occupied_cell(const char *shm_addr, const int x, const int y);
+bool check_occupied_cell(const char *map_addr, const int x, const int y);
 
 void game_loop(t_player *player);
+t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_number);
 bool get_message(t_player *player);
+t_pos get_enemy_position(t_player *player);
+void move_to(t_player *player, const t_pos *enemy_pos);
+t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos);
+
+void move_up(t_player *player, const char free_space_filler);
+void move_down(t_player *player, const char free_space_filler);
+void move_left(t_player *player, const char free_space_filler);
+void move_right(t_player *player, const char free_space_filler);
 
 #endif
