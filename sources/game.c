@@ -62,12 +62,29 @@ t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_num
 
 t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 {
-	/// TODO
+	int dx;
+	int dy;
+	int delta;
+
+	dx = player_pos->x - enemy_pos->x;
+	dy = player_pos->y - enemy_pos->y;
+	dx = (dx == 0) ? dy - 1 : dx;
+	dy = (dy == 0) ? dx - 1 : dy;
+	delta = (abs(dx) > abs(dy)) ? dx : dy;
+	if (delta == dx)
+	{
+		if (dx > 0)
+			return (LEFT);
+		return (RIGHT);
+	}
+	else if (dy > 0)
+		return (UP);
+	return (DOWN);
 }
 
 void move_to(t_player *player, const t_pos *enemy_pos)
 {
-	get_direction(&player->position, enemy_pos);
+	t_direction direction = get_direction(&player->position, enemy_pos);
 }
 
 t_pos get_enemy_position(t_player *player)

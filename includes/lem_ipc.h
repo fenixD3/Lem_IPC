@@ -61,6 +61,8 @@ typedef enum e_direction
 	RIGHT
 } t_direction;
 
+typedef void (*g_moving[4])(t_moving(t_player *, const char));
+
 void check_input(int ac, char **av);
 
 t_ipcs *create_ipcs(const int process_count, const int team_players);
