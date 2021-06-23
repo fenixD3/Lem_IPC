@@ -68,8 +68,10 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 
 	dx = player_pos->x - enemy_pos->x;
 	dy = player_pos->y - enemy_pos->y;
-	dx = (dx == 0) ? dy - 1 : dx;
-	dy = (dy == 0) ? dx - 1 : dy;
+//	dx = (dx == 0) ? dy - 1 : dx;
+//	dy = (dy == 0) ? dx - 1 : dy;
+	if ((abs(dx) == 1 && abs(dy) == 1) || (abs(dx) == 1 && dy == 0) || (dx == 0 && abs(dy) == 1))
+		return (NONE);
 	delta = (abs(dx) > abs(dy)) ? dx : dy;
 	if (delta == dx)
 	{
@@ -85,6 +87,8 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 void move_to(t_player *player, const t_pos *enemy_pos)
 {
 	t_direction direction = get_direction(&player->position, enemy_pos);
+	if (direction != NONE)
+		(*g_moving[direction])(player, MAP_FILLER);
 }
 
 t_pos get_enemy_position(t_player *player)

@@ -58,10 +58,11 @@ typedef enum e_direction
 	UP,
 	DOWN,
 	LEFT,
-	RIGHT
+	RIGHT,
+	NONE
 } t_direction;
 
-typedef void (*g_moving[4])(t_moving(t_player *, const char));
+extern void (*g_moving[4])(t_player *, const char);
 
 void check_input(int ac, char **av);
 
