@@ -30,7 +30,12 @@ void fill_player_info(t_player *player, int team_number)
 	player->msg_buff = create_msg_buff(player->ipcs->mq_attrs->mq_msgsize);
 	player->logger = create_logger(*player->process_count_mapped);
 	create_log_file(&player->logger->files_info, *player->process_count_mapped);
-	write_to_log(player->logger, *player->process_count_mapped, "New player with PID %d in %d team\n", getpid(), team_number);
+	write_to_log(
+		player->logger,
+		*player->process_count_mapped,
+		"New player with PID %d in %d team\n",
+		getpid(),
+		team_number);
 	find_starting_place(player);
 }
 
@@ -59,6 +64,13 @@ void find_starting_place(t_player *player)
 	*(player->ipcs->shm_addr + (player_position.x * MAP_X + player_position.y)) = player->team_number + '0';
 	player->position = player_position;
 	sem_post(player->ipcs->sem);
+	write_to_log(
+		player->logger,
+		*player->process_count_mapped,
+		"Player PID %d with start position {%d;%d}",
+		getpid(),
+		player->position.x,
+		player->position.y);
 }
 
 void delete_player(t_player *player)

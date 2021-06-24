@@ -31,13 +31,25 @@ bool get_message(t_player *player)
 	if ((mq_receive(player->ipcs->mq, player->msg_buff, player->ipcs->mq_attrs->mq_msgsize, NULL)) == -1)
 	{
 		if (errno == EAGAIN)
+		{
+			write_to_log(
+				player->logger,
+				*player->process_count_mapped,
+				"Player PID %d read MSQ: Empty",
+				getpid());
 			return false;
+		}
 		else
 		{
 			perror("mq_get_message");
 			exit(EXIT_FAILURE);
 		}
 	}
+	write_to_log(
+		player->logger,
+		*player->process_count_mapped,
+		"Player PID %d read MSQ: Success",
+		getpid());
 	return true;
 }
 
@@ -68,16 +80,16 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 
 	dx = player_pos->x - enemy_pos->x;
 	dy = player_pos->y - enemy_pos->y;
-//	dx = (dx == 0) ? dy - 1 : dx;
-//	dy = (dy == 0) ? dx - 1 : dy;
+	dx = (dx == 0) ? dy - 1 : dx;
+	dy = (dy == 0) ? dx - 1 : dy;
 	if ((abs(dx) == 1 && abs(dy) == 1) || (abs(dx) == 1 && dy == 0) || (dx == 0 && abs(dy) == 1))
 		return (NONE);
-	delta = (abs(dx) > abs(dy)) ? dx : dy;
+	delta = (abs(dx) > abs(dy)) ? dy : dx;
 	if (delta == dx)
 	{
 		if (dx > 0)
-			return (LEFT);
-		return (RIGHT);
+			return (RIGHT);
+		return (LEFT);
 	}
 	else if (dy > 0)
 		return (UP);
@@ -87,6 +99,12 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 void move_to(t_player *player, const t_pos *enemy_pos)
 {
 	t_direction direction = get_direction(&player->position, enemy_pos);
+	write_to_log(
+		player->logger,
+		*player->process_count_mapped,
+		"Player PID %d move to direction %d",
+		getpid(),
+		direction);
 	if (direction != NONE)
 		(*g_moving[direction])(player, MAP_FILLER);
 }
@@ -102,6 +120,11 @@ t_pos get_enemy_position(t_player *player)
 	{
 		enemy_pos = find_enemy(player->position, player->ipcs->shm_addr, player->team_number);
 		sprintf(message, "%d %d", enemy_pos.x, enemy_pos.y);
+		write_to_log(
+			player->logger,
+			*player->process_count_mapped,
+			"Player PID %d found enemy in map",
+			getpid());
 		mq_send(player->ipcs->mq, message, strlen(message), 0); /// TODO may be need send message n time (n - count process in team)
 	}
 	return enemy_pos;
@@ -117,11 +140,32 @@ void game_loop(t_player *player)
 	while (true)
 	{
 		sem_wait(player->ipcs->sem);
+		write_to_log(
+			player->logger,
+			*player->process_count_mapped,
+			"Player PID %d start his turn",
+			getpid());
 		if (*player->process_count_mapped == 1)
 			return print_winner(player);
 		if (check_death(player))
+		{
+			write_to_log(
+				player->logger,
+				*player->process_count_mapped,
+				"Player PID %d died",
+				getpid());
 			return;
+		}
 		t_pos enemy_pos = get_enemy_position(player);
+		write_to_log(
+			player->logger,
+			*player->process_count_mapped,
+			"Player PID %d and position {%d;%d} find enemy with position {%d;%d}",
+			getpid(),
+			player->position.x,
+			player->position.y,
+			enemy_pos.x,
+			enemy_pos.y);
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
 	}
