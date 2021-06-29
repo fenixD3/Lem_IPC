@@ -67,7 +67,7 @@ void find_starting_place(t_player *player)
 	write_to_log(
 		player->logger,
 		*player->process_count_mapped,
-		"Player PID %d with start position {%d;%d}",
+		"Player PID %d with start position {%d;%d}\n",
 		getpid(),
 		player->position.x,
 		player->position.y);

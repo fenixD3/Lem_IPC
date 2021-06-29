@@ -35,7 +35,7 @@ bool get_message(t_player *player)
 			write_to_log(
 				player->logger,
 				*player->process_count_mapped,
-				"Player PID %d read MSQ: Empty",
+				"Player PID %d read MSQ: Empty\n",
 				getpid());
 			return false;
 		}
@@ -48,7 +48,7 @@ bool get_message(t_player *player)
 	write_to_log(
 		player->logger,
 		*player->process_count_mapped,
-		"Player PID %d read MSQ: Success",
+		"Player PID %d read MSQ: Success\n",
 		getpid());
 	return true;
 }
@@ -102,7 +102,7 @@ void move_to(t_player *player, const t_pos *enemy_pos)
 	write_to_log(
 		player->logger,
 		*player->process_count_mapped,
-		"Player PID %d move to direction %d",
+		"Player PID %d move to direction %d\n",
 		getpid(),
 		direction);
 	if (direction != NONE)
@@ -123,7 +123,7 @@ t_pos get_enemy_position(t_player *player)
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
-			"Player PID %d found enemy in map",
+			"Player PID %d found enemy in map\n",
 			getpid());
 		mq_send(player->ipcs->mq, message, strlen(message), 0); /// TODO may be need send message n time (n - count process in team)
 	}
@@ -143,7 +143,7 @@ void game_loop(t_player *player)
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
-			"Player PID %d start his turn",
+			"Player PID %d start his turn\n",
 			getpid());
 		if (*player->process_count_mapped == 1)
 			return print_winner(player);
@@ -152,7 +152,7 @@ void game_loop(t_player *player)
 			write_to_log(
 				player->logger,
 				*player->process_count_mapped,
-				"Player PID %d died",
+				"Player PID %d died\n",
 				getpid());
 			return;
 		}
@@ -160,7 +160,7 @@ void game_loop(t_player *player)
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
-			"Player PID %d and position {%d;%d} find enemy with position {%d;%d}",
+			"Player PID %d and position {%d;%d} find enemy with position {%d;%d}\n",
 			getpid(),
 			player->position.x,
 			player->position.y,
@@ -168,5 +168,6 @@ void game_loop(t_player *player)
 			enemy_pos.y);
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
+		sleep(3);
 	}
 }

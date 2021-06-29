@@ -26,7 +26,7 @@ int main(int ac, char **av)
 	check_input(ac, av);
 	fill_player_info(&player, atoi(av[1]));
 //	print_shm(player.ipcs); /// tests
-	sleep(5);
+	sleep(3);
 	game_loop(&player);
 	delete_player(&player);
 	return (EXIT_SUCCESS);
