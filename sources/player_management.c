@@ -26,7 +26,7 @@ void fill_player_info(t_player *player, int team_number)
 	++*player->process_count_mapped;
 	player->team_number = team_number;
 	++player->team_players;
-	player->ipcs = create_ipcs(*player->process_count_mapped, player->team_players);
+	player->ipcs = create_ipcs(*player->process_count_mapped, player->team_number);
 	player->msg_buff = create_msg_buff(player->ipcs->mq_attrs->mq_msgsize);
 	player->logger = create_logger(*player->process_count_mapped);
 	create_log_file(&player->logger->files_info, *player->process_count_mapped);

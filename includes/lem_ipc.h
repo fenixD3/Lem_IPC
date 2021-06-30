@@ -66,7 +66,7 @@ extern void (*g_moving[4])(t_player *, const char);
 
 void check_input(int ac, char **av);
 
-t_ipcs *create_ipcs(const int process_count, const int team_players);
+t_ipcs *create_ipcs(const int process_count, const int team_number);
 
 bool close_ipcs(t_ipcs *ipcs);
 bool close_sem(sem_t **sem);

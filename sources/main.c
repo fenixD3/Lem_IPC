@@ -19,6 +19,10 @@ void print_shm(t_ipcs *ipcs)
 	sem_post(ipcs->sem);
 }
 
+/// TODO:
+/// починить поиск соперника - сейчас находит сам себя
+/// после смерти первого процесса все остальные остаются блокированными в семафоре (add sem_post()) [fix]
+
 int main(int ac, char **av)
 {
 	t_player	player;

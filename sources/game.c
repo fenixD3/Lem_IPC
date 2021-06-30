@@ -10,7 +10,6 @@ bool check_death(const t_player *player)
 
 	enemy_cnt = 0;
 	is_died = false;
-	sem_wait(player->ipcs->sem);
 	for (int x = player->position.x - 1; x <= player->position.x + 1; ++x)
 		for (int y = player->position.y - 1; y <= player->position.y + 1; ++y)
 		{
@@ -22,7 +21,6 @@ bool check_death(const t_player *player)
 				break;
 			}
 		}
-	sem_post(player->ipcs->sem);
 	return is_died;
 }
 
@@ -132,7 +130,7 @@ t_pos get_enemy_position(t_player *player)
 
 static void print_winner(const t_player *player)
 {
-	printf("Team %d is winner", player->team_number);
+	printf("Team %d is winner\n", player->team_number);
 }
 
 void game_loop(t_player *player)
@@ -154,6 +152,7 @@ void game_loop(t_player *player)
 				*player->process_count_mapped,
 				"Player PID %d died\n",
 				getpid());
+			sem_post(player->ipcs->sem);
 			return;
 		}
 		t_pos enemy_pos = get_enemy_position(player);

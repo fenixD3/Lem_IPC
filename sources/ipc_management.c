@@ -8,7 +8,7 @@ static void init_shm_map(char *shm_addr, const char filler)
 			*(shm_addr + (x + y)) = filler;
 }
 
-t_ipcs *create_ipcs(const int process_count, const int team_players)
+t_ipcs *create_ipcs(const int process_count, const int team_number)
 {
 	t_ipcs *ipcs;
 
@@ -21,7 +21,7 @@ t_ipcs *create_ipcs(const int process_count, const int team_players)
 	if (process_count == 1)
 		init_shm_map(ipcs->shm_addr, MAP_FILLER);
 	ipcs->sem = get_sem(SEM_NAME, process_count);
-	ipcs->mq = get_mq(MQ_NAME, process_count, team_players);
+	ipcs->mq = get_mq(MQ_NAME, process_count, team_number);
 	if (!(ipcs->mq_attrs = malloc(sizeof(t_mq_attr))))
 	{
 		perror("malloc_mq_attrs");
