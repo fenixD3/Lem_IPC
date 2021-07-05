@@ -79,7 +79,7 @@ void delete_player(t_player *player)
 	close_ipcs(player->ipcs);
 	if (*player->process_count_mapped == 0)
 	{
-		destroy_ipcs(player->ipcs, 0);
+		destroy_ipcs(player->ipcs);
 		write_to_log(player->logger, *player->process_count_mapped, "Destroy logger\n");
 		destroy_logger(player->logger);
 		unlink(FILE_PROCESS_NAME);

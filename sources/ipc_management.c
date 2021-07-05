@@ -47,7 +47,7 @@ bool close_ipcs(t_ipcs *ipcs)
 	return is_error;
 }
 
-void destroy_ipcs(t_ipcs *ipcs, const int team_players)
+void destroy_ipcs(t_ipcs *ipcs)
 {
 	bool is_error;
 

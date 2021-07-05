@@ -60,7 +60,7 @@ t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_num
 	while (!is_enemy_found && ++circle)
 		for (int x = player_position.x - circle; x <= player_position.x + circle; ++x)
 			for (int y = player_position.y - circle; y <= player_position.y + circle; ++y)
-				if (check_occupied_cell(map_addr, x, y) && team_number != isdigit(*(map_addr + (x * MAP_X + y))))
+				if (check_occupied_cell(map_addr, x, y) && team_number != atoi(map_addr + (x * MAP_X + y)))
 				{
 					is_enemy_found = true;
 					enemy_pos.x = x;

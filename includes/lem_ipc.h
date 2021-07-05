@@ -71,7 +71,7 @@ t_ipcs *create_ipcs(const int process_count, const int team_number);
 bool close_ipcs(t_ipcs *ipcs);
 bool close_sem(sem_t **sem);
 bool close_mq(mqd_t mq);
-void destroy_ipcs(t_ipcs *ipcs, const int team_players);
+void destroy_ipcs(t_ipcs *ipcs);
 
 void fill_player_info(t_player *player, int team_number);
 char *create_msg_buff(const long max_msg_size);

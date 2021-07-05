@@ -70,7 +70,7 @@ void destroy_mq(const char *mq_name_prefix, const int team_count)
 	for (int i = 1; i <= team_count; ++i)
 	{
 		sprintf(mq_name, "%s%s%d", mq_name_prefix, "_", i);
-		mq_unlink(mq_name_prefix);
+		mq_unlink(mq_name);
 	}
 }
 
