@@ -86,8 +86,8 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 	if (delta == dx)
 	{
 		if (dx > 0)
-			return (RIGHT);
-		return (LEFT);
+			return (LEFT);
+		return (RIGHT);
 	}
 	else if (dy > 0)
 		return (UP);
@@ -104,7 +104,23 @@ void move_to(t_player *player, const t_pos *enemy_pos)
 		getpid(),
 		direction);
 	if (direction != NONE)
+	{
 		(*g_moving[direction])(player, MAP_FILLER);
+		write_to_log(
+			player->logger,
+			*player->process_count_mapped,
+			"Player PID %d have new position {%d;%d}\n",
+			getpid(),
+			player->position.x,
+			player->position.y);
+	}
+	else
+		write_to_log(
+			player->logger,
+			*player->process_count_mapped,
+			"Player PID %d hasn't got direction\n",
+			getpid());
+
 }
 
 t_pos get_enemy_position(t_player *player)

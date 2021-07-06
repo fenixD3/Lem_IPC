@@ -82,6 +82,7 @@ void delete_player(t_player *player);
 
 bool check_death(const t_player *player);
 bool check_occupied_cell(const char *map_addr, const int x, const int y);
+bool check_out_of_map_bound(const int x, const int y);
 
 void game_loop(t_player *player);
 t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_number);
