@@ -17,6 +17,6 @@ add_executable(Lem_IPC
         sources/player_management.c
         sources/game.c
         sources/logger/logger.c
-        sources/logger/logger_utils.c sources/utils.c sources/moving.c)
+        sources/logger/logger_utils.c sources/utils.c sources/moving.c sources/enemy_searching.c)
 
 target_link_libraries(Lem_IPC pthread rt)

@@ -86,6 +86,7 @@ bool check_out_of_map_bound(const int x, const int y);
 
 void game_loop(t_player *player);
 t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_number);
+t_pos find_enemy_new(t_pos player_position, const char *map_addr, const int team_number);
 bool get_message(t_player *player);
 t_pos get_enemy_position(t_player *player);
 void move_to(t_player *player, const t_pos *enemy_pos);

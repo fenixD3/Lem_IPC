@@ -1,6 +1,5 @@
 #include "lem_ipc.h"
 #include <ctype.h>
-#include <assert.h>
 #include <string.h>
 
 bool check_death(const t_player *player)
@@ -49,25 +48,6 @@ bool get_message(t_player *player)
 		"Player PID %d read MSQ: Success\n",
 		getpid());
 	return true;
-}
-
-t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_number)
-{
-	t_pos enemy_pos = {.x = -1, .y = -1};
-	bool is_enemy_found = false;
-	int circle = 0;
-
-	while (!is_enemy_found && ++circle)
-		for (int x = player_position.x - circle; x <= player_position.x + circle; ++x)
-			for (int y = player_position.y - circle; y <= player_position.y + circle; ++y)
-				if (check_occupied_cell(map_addr, x, y) && team_number != atoi(map_addr + (x * MAP_X + y)))
-				{
-					is_enemy_found = true;
-					enemy_pos.x = x;
-					enemy_pos.y = y;
-				}
-	assert(enemy_pos.x != -1 || enemy_pos.y != -1);
-	return enemy_pos;
 }
 
 t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
@@ -132,7 +112,7 @@ t_pos get_enemy_position(t_player *player)
 		sscanf(player->msg_buff, "%d %d", &enemy_pos.x, &enemy_pos.y);
 	else
 	{
-		enemy_pos = find_enemy(player->position, player->ipcs->shm_addr, player->team_number);
+		enemy_pos = find_enemy_new(player->position, player->ipcs->shm_addr, player->team_number);
 		sprintf(message, "%d %d", enemy_pos.x, enemy_pos.y);
 		write_to_log(
 			player->logger,
