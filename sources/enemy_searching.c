@@ -8,7 +8,7 @@ static bool find_upside(
 	const char *map_addr,
 	const int team_number)
 {
-	assert(player_offset < 0);
+	assert(player_offset > 0);
 
 	bool is_enemy_found = false;
 	int x = player_position.x - player_offset;
@@ -40,7 +40,7 @@ static bool find_downside(
 		const char *map_addr,
 		const int team_number)
 {
-	assert(player_offset < 0);
+	assert(player_offset > 0);
 
 	bool is_enemy_found = false;
 	int x = player_position.x + player_offset;
@@ -72,7 +72,7 @@ static bool find_rightside(
 		const char *map_addr,
 		const int team_number)
 {
-	assert(player_offset < 0);
+	assert(player_offset > 0);
 
 	bool is_enemy_found = false;
 	int y = player_position.y + player_offset;
@@ -104,7 +104,7 @@ static bool find_leftside(
 		const char *map_addr,
 		const int team_number)
 {
-	assert(player_offset < 0);
+	assert(player_offset > 0);
 
 	bool is_enemy_found = false;
 	int y = player_position.y - player_offset;
