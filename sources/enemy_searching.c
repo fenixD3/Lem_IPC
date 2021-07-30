@@ -148,24 +148,3 @@ t_pos find_enemy_new(t_pos player_position, const char *map_addr, const int team
 	assert(enemy_pos.x != -1 || enemy_pos.y != -1);
 	return enemy_pos;
 }
-
-t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_number)
-{
-	t_pos enemy_pos = {.x = -1, .y = -1};
-	bool is_enemy_found = false;
-	int circle = 0;
-
-	while (!is_enemy_found && ++circle)
-		for (int x = player_position.x - circle; x <= player_position.x + circle; ++x)
-			for (int y = player_position.y - circle; y <= player_position.y + circle; ++y)
-				if (check_occupied_cell(map_addr, x, y) && team_number != atoi(map_addr + (x * MAP_X + y)))
-				{
-					is_enemy_found = true;
-					enemy_pos.x = x;
-					enemy_pos.y = y;
-				}
-	assert(enemy_pos.x != -1 || enemy_pos.y != -1);
-	return enemy_pos;
-}
-
-

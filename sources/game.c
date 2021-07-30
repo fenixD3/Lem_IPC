@@ -7,13 +7,28 @@ bool check_death(const t_player *player)
 	int enemy_cnt;
 	bool is_died;
 
+	write_to_log(
+		player->logger,
+		*player->process_count_mapped,
+		"Player PID %d check your death\n",
+		getpid());
 	enemy_cnt = 0;
 	is_died = false;
 	for (int x = player->position.x - 1; x <= player->position.x + 1; ++x)
 		for (int y = player->position.y - 1; y <= player->position.y + 1; ++y)
 		{
-			if (check_occupied_cell(player->ipcs->shm_addr, x, y) && player->team_number != isdigit(*(player->ipcs->shm_addr + (x * MAP_X + y))))
+			if (check_occupied_cell(player->ipcs->shm_addr, x, y) && player->team_number != atoi(player->ipcs->shm_addr + (x * MAP_X + y)))
+			{
 				++enemy_cnt;
+				write_to_log(
+					player->logger,
+					*player->process_count_mapped,
+					"Player PID %d find a new enemy {%d;%d} near itself. Found enemy is %d\n",
+					getpid(),
+					x,
+					y,
+					enemy_cnt);
+			}
 			if (enemy_cnt == 2)
 			{
 				is_died = true;
@@ -25,7 +40,8 @@ bool check_death(const t_player *player)
 
 bool get_message(t_player *player)
 {
-	if ((mq_receive(player->ipcs->mq, player->msg_buff, player->ipcs->mq_attrs->mq_msgsize, NULL)) == -1)
+	ssize_t read_cnt;
+	if ((read_cnt = mq_receive(player->ipcs->mq, player->msg_buff, player->ipcs->mq_attrs->mq_msgsize, NULL)) == -1)
 	{
 		if (errno == EAGAIN)
 		{
@@ -42,6 +58,7 @@ bool get_message(t_player *player)
 			exit(EXIT_FAILURE);
 		}
 	}
+	player->msg_buff[read_cnt] = '\0';
 	write_to_log(
 		player->logger,
 		*player->process_count_mapped,
@@ -58,20 +75,20 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 
 	dx = player_pos->x - enemy_pos->x;
 	dy = player_pos->y - enemy_pos->y;
-	dx = (dx == 0) ? dy - 1 : dx;
-	dy = (dy == 0) ? dx - 1 : dy;
 	if ((abs(dx) == 1 && abs(dy) == 1) || (abs(dx) == 1 && dy == 0) || (dx == 0 && abs(dy) == 1))
 		return (NONE);
+//	dx = (dx == 0) ? dy - 1 : dx;
+//	dy = (dy == 0) ? dx - 1 : dy;
 	delta = (abs(dx) > abs(dy)) ? dy : dx;
 	if (delta == dx)
 	{
 		if (dx > 0)
-			return (LEFT);
-		return (RIGHT);
+			return (UP);
+		return (DOWN);
 	}
 	else if (dy > 0)
-		return (UP);
-	return (DOWN);
+		return (LEFT);
+	return (RIGHT);
 }
 
 void move_to(t_player *player, const t_pos *enemy_pos)
@@ -112,6 +129,11 @@ t_pos get_enemy_position(t_player *player)
 		sscanf(player->msg_buff, "%d %d", &enemy_pos.x, &enemy_pos.y);
 	else
 	{
+		write_to_log(
+			player->logger,
+			*player->process_count_mapped,
+			"MSQ reading failed\n",
+			getpid());
 		enemy_pos = find_enemy_new(player->position, player->ipcs->shm_addr, player->team_number);
 		sprintf(message, "%d %d", enemy_pos.x, enemy_pos.y);
 		write_to_log(
