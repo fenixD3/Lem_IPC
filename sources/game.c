@@ -4,7 +4,8 @@
 
 bool check_death(const t_player *player)
 {
-	int enemy_cnt;
+	int enemy_cnt[TEAM_COUNT] = {0};
+	int enemy_team;
 	bool is_died;
 
 	write_to_log(
@@ -12,30 +13,28 @@ bool check_death(const t_player *player)
 		*player->process_count_mapped,
 		"Player PID %d check your death\n",
 		getpid());
-	enemy_cnt = 0;
 	is_died = false;
-	for (int x = player->position.x - 1; x <= player->position.x + 1; ++x)
-		for (int y = player->position.y - 1; y <= player->position.y + 1; ++y)
+	for (int x = player->position.x - 1; !is_died && x <= player->position.x + 1; ++x)
+		for (int y = player->position.y - 1; !is_died && y <= player->position.y + 1; ++y)
 		{
 			if (check_occupied_cell(player->ipcs->shm_addr, x, y)
-				&& player->team_number != atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)))
+				&& player->team_number != (enemy_team = atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT))))
 			{
-				++enemy_cnt;
+				++enemy_cnt[enemy_team];
 				write_to_log(
 					player->logger,
 					*player->process_count_mapped,
-					"Player PID %d team %d find a new enemy {%d;%d} team %d near itself. Found enemy is %d\n",
+					"Player PID %d team %d find a new enemy {%d;%d} team %d near itself. Found enemy is %d in team\n",
 					getpid(),
 					player->team_number,
 					x,
 					y,
-					atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)),
-					enemy_cnt);
-			}
-			if (enemy_cnt == 2)
-			{
-				is_died = true;
-				break;
+					enemy_team,
+					enemy_cnt[enemy_team]);
+
+				for (int team = 0; team < TEAM_COUNT; ++team)
+					if (enemy_cnt[team] == 2)
+						is_died = true;
 			}
 		}
 	return is_died;
@@ -171,8 +170,6 @@ void game_loop(t_player *player)
 			*player->process_count_mapped,
 			"Player PID %d start his turn\n",
 			getpid());
-		if (*player->process_count_mapped == 1)
-			return print_winner(player);
 		if (check_death(player))
 		{
 			write_to_log(
@@ -194,6 +191,8 @@ void game_loop(t_player *player)
 			player->position.y,
 			enemy_pos.x,
 			enemy_pos.y);
+		if (enemy_pos.x == -1 && enemy_pos.y == -1)
+			print_winner(player);
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
 		sleep(3);

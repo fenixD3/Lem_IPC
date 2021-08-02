@@ -181,6 +181,8 @@ t_pos find_enemy(t_player *player)
 
 	while (++circle)
 	{
+		if (circle > 20)
+			break;
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
@@ -196,6 +198,5 @@ t_pos find_enemy(t_player *player)
 		if (find_rightside(&enemy_pos, player, circle))
 			break;
 	}
-	assert(enemy_pos.x != -1 || enemy_pos.y != -1);
 	return enemy_pos;
 }
