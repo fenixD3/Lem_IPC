@@ -5,7 +5,7 @@
 
 char *get_shm(const char *shm_name, size_t shm_size, const int process_count);
 sem_t *get_sem(const char *sem_name, const int process_count);
-mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team_players);
+mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team_number);
 
 bool get_or_create_mapped_file(const char *file_name, size_t file_size, void **file_mapped);
 

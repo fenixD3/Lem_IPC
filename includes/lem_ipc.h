@@ -2,6 +2,7 @@
 #define LEM_IPC_H
 
 #define TEAM_COUNT 4
+#define TEAM_NUM_CNT 1
 #define MAP_X 20
 #define MAP_SIZE MAP_X * MAP_X
 
@@ -45,7 +46,7 @@ typedef struct s_pos
 typedef struct s_player
 {
 	int team_number;
-	int team_players;
+//	int team_players;
 	t_pos position;
 	t_ipcs *ipcs;
 	char *msg_buff;
@@ -85,8 +86,7 @@ bool check_occupied_cell(const char *map_addr, const int x, const int y);
 bool check_out_of_map_bound(const int x, const int y);
 
 void game_loop(t_player *player);
-t_pos find_enemy(t_pos player_position, const char *map_addr, const int team_number);
-t_pos find_enemy_new(t_pos player_position, const char *map_addr, const int team_number);
+t_pos find_enemy(t_player *player);
 bool get_message(t_player *player);
 t_pos get_enemy_position(t_player *player);
 void move_to(t_player *player, const t_pos *enemy_pos);

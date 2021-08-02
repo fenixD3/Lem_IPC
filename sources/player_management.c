@@ -10,7 +10,7 @@
 void init_player(t_player *player)
 {
 	player->team_number = -1;
-	player->team_players = 0;
+//	player->team_players = 0;
 	player->position.x = -1;
 	player->position.y = -1;
 	player->ipcs = NULL;
@@ -25,7 +25,7 @@ void fill_player_info(t_player *player, int team_number)
 	get_or_create_mapped_file(FILE_PROCESS_NAME, sizeof(int), (void **)&player->process_count_mapped);
 	++*player->process_count_mapped;
 	player->team_number = team_number;
-	++player->team_players;
+//	++player->team_players;
 	player->ipcs = create_ipcs(*player->process_count_mapped, player->team_number);
 	player->msg_buff = create_msg_buff(player->ipcs->mq_attrs->mq_msgsize);
 	player->logger = create_logger(*player->process_count_mapped);

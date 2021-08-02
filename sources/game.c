@@ -17,16 +17,19 @@ bool check_death(const t_player *player)
 	for (int x = player->position.x - 1; x <= player->position.x + 1; ++x)
 		for (int y = player->position.y - 1; y <= player->position.y + 1; ++y)
 		{
-			if (check_occupied_cell(player->ipcs->shm_addr, x, y) && player->team_number != atoi(player->ipcs->shm_addr + (x * MAP_X + y)))
+			if (check_occupied_cell(player->ipcs->shm_addr, x, y)
+				&& player->team_number != atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)))
 			{
 				++enemy_cnt;
 				write_to_log(
 					player->logger,
 					*player->process_count_mapped,
-					"Player PID %d find a new enemy {%d;%d} near itself. Found enemy is %d\n",
+					"Player PID %d team %d find a new enemy {%d;%d} team %d near itself. Found enemy is %d\n",
 					getpid(),
+					player->team_number,
 					x,
 					y,
+					atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)),
 					enemy_cnt);
 			}
 			if (enemy_cnt == 2)
@@ -54,6 +57,12 @@ bool get_message(t_player *player)
 		}
 		else
 		{
+			write_to_log(
+				player->logger,
+				*player->process_count_mapped,
+				"Player PID %d read MSQ: Error - %d\n",
+				getpid(),
+				errno);
 			perror("mq_get_message");
 			exit(EXIT_FAILURE);
 		}
@@ -77,9 +86,10 @@ t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 	dy = player_pos->y - enemy_pos->y;
 	if ((abs(dx) == 1 && abs(dy) == 1) || (abs(dx) == 1 && dy == 0) || (dx == 0 && abs(dy) == 1))
 		return (NONE);
-//	dx = (dx == 0) ? dy - 1 : dx;
-//	dy = (dy == 0) ? dx - 1 : dy;
-	delta = (abs(dx) > abs(dy)) ? dy : dx;
+	if (dx == 0 || dy == 0)
+		delta = (dx == 0) ? dy : dx;
+	else
+		delta = (abs(dx) > abs(dy)) ? dy : dx;
 	if (delta == dx)
 	{
 		if (dx > 0)
@@ -134,7 +144,7 @@ t_pos get_enemy_position(t_player *player)
 			*player->process_count_mapped,
 			"MSQ reading failed\n",
 			getpid());
-		enemy_pos = find_enemy_new(player->position, player->ipcs->shm_addr, player->team_number);
+		enemy_pos = find_enemy(player);
 		sprintf(message, "%d %d", enemy_pos.x, enemy_pos.y);
 		write_to_log(
 			player->logger,
@@ -170,6 +180,7 @@ void game_loop(t_player *player)
 				*player->process_count_mapped,
 				"Player PID %d died\n",
 				getpid());
+			*(player->ipcs->shm_addr + (player->position.x * MAP_X + player->position.y)) = MAP_FILLER;
 			sem_post(player->ipcs->sem);
 			return;
 		}

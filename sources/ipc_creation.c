@@ -53,7 +53,7 @@ sem_t *get_sem(const char *sem_name, const int process_count)
 	return sem;
 }
 
-mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team_players)
+mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team_number)
 {
 	mqd_t mq;
 	char *mq_name;
@@ -63,7 +63,7 @@ mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team
 		perror("malloc_mq_name");
 		exit(EXIT_FAILURE);
 	}
-	sprintf(mq_name, "%s%s%d", mq_name_prefix, "_", team_players);
+	sprintf(mq_name, "%s%s%d", mq_name_prefix, "_", team_number);
 	printf("PID %d, Mq name = %s\n", getpid(), mq_name);
 	if (process_count == 1)
 		mq_unlink(mq_name);
