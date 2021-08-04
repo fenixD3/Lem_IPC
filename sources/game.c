@@ -1,5 +1,4 @@
 #include "lem_ipc.h"
-#include <ctype.h>
 #include <string.h>
 
 bool check_death(const t_player *player)
@@ -17,8 +16,9 @@ bool check_death(const t_player *player)
 	for (int x = player->position.x - 1; !is_died && x <= player->position.x + 1; ++x)
 		for (int y = player->position.y - 1; !is_died && y <= player->position.y + 1; ++y)
 		{
-			if (check_occupied_cell(player->ipcs->shm_addr, x, y)
-				&& player->team_number != (enemy_team = atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT))))
+			if (!check_out_of_map_bound(x, y)
+				&& check_occupied_cell(player->ipcs->shm_addr, x, y)
+				&& player->team_number != (enemy_team = get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT)))
 			{
 				++enemy_cnt[enemy_team];
 				write_to_log(
@@ -75,31 +75,6 @@ bool get_message(t_player *player)
 	return true;
 }
 
-t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
-{
-	int dx;
-	int dy;
-	int delta;
-
-	dx = player_pos->x - enemy_pos->x;
-	dy = player_pos->y - enemy_pos->y;
-	if ((abs(dx) == 1 && abs(dy) == 1) || (abs(dx) == 1 && dy == 0) || (dx == 0 && abs(dy) == 1))
-		return (NONE);
-	if (dx == 0 || dy == 0)
-		delta = (dx == 0) ? dy : dx;
-	else
-		delta = (abs(dx) > abs(dy)) ? dy : dx;
-	if (delta == dx)
-	{
-		if (dx > 0)
-			return (UP);
-		return (DOWN);
-	}
-	else if (dy > 0)
-		return (LEFT);
-	return (RIGHT);
-}
-
 void move_to(t_player *player, const t_pos *enemy_pos)
 {
 	t_direction direction = get_direction(&player->position, enemy_pos);
@@ -121,6 +96,7 @@ void move_to(t_player *player, const t_pos *enemy_pos)
 			player->position.y);
 	}
 	else
+		/// TODO may be send to MSQ this enemy_pos
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
@@ -192,7 +168,7 @@ void game_loop(t_player *player)
 			enemy_pos.x,
 			enemy_pos.y);
 		if (enemy_pos.x == -1 && enemy_pos.y == -1)
-			print_winner(player);
+			return print_winner(player);
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
 		sleep(3);

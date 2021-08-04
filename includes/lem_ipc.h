@@ -24,6 +24,7 @@
 #include <fcntl.h>
 #include <semaphore.h>
 #include <mqueue.h>
+#include <assert.h>
 
 #include "logger.h"
 
@@ -63,7 +64,7 @@ typedef enum e_direction
 	NONE
 } t_direction;
 
-extern void (*g_moving[4])(t_player *, const char);
+//extern void (*g_moving[4])(t_player *, const char);
 
 void check_input(int ac, char **av);
 
@@ -82,8 +83,10 @@ void find_starting_place(t_player *player);
 void delete_player(t_player *player);
 
 bool check_death(const t_player *player);
+
 bool check_occupied_cell(const char *map_addr, const int x, const int y);
 bool check_out_of_map_bound(const int x, const int y);
+int get_number_from_map(const char *map_addr, const int x_offset, const int y_offset, const int number_length);
 
 void game_loop(t_player *player);
 t_pos find_enemy(t_player *player);
@@ -96,5 +99,21 @@ void move_up(t_player *player, const char free_space_filler);
 void move_down(t_player *player, const char free_space_filler);
 void move_left(t_player *player, const char free_space_filler);
 void move_right(t_player *player, const char free_space_filler);
+
+static void (*g_moving[4])(t_player *, const char) =
+{
+	move_up,
+	move_down,
+	move_left,
+	move_right
+};
+
+static t_pos position_offsets[4] =
+{
+	{.x = -1, .y = 0},
+	{.x = 1, .y = 0},
+	{.x = 0, .y = -1},
+	{.x = 0, .y = 1},
+};
 
 #endif

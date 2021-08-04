@@ -59,7 +59,8 @@ void find_starting_place(t_player *player)
 	sem_wait(player->ipcs->sem);
 	player_position = get_start_player_position();
 	for (bool is_not_placed = true; is_not_placed; player_position = get_start_player_position())
-		if (!check_occupied_cell(player->ipcs->shm_addr, player_position.x, player_position.y))
+		if (!check_out_of_map_bound(player_position.x, player_position.y)
+			&& !check_occupied_cell(player->ipcs->shm_addr, player_position.x, player_position.y))
 			is_not_placed = false;
 	*(player->ipcs->shm_addr + (player_position.x * MAP_X + player_position.y)) = player->team_number + '0';
 	player->position = player_position;

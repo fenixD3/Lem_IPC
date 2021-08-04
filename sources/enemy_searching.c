@@ -1,6 +1,4 @@
 #include "lem_ipc.h"
-#include <assert.h>
-#include <string.h>
 
 static bool find_upside(
 	t_pos *enemy_pos,
@@ -34,8 +32,9 @@ static bool find_upside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)))
+		if (!check_out_of_map_bound(x, y)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
@@ -77,8 +76,9 @@ static bool find_downside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)))
+		if (!check_out_of_map_bound(x, y)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
@@ -120,8 +120,9 @@ static bool find_rightside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)))
+		if (!check_out_of_map_bound(x, y)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
@@ -163,8 +164,9 @@ static bool find_leftside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != atoi(strndup(player->ipcs->shm_addr + (x * MAP_X + y), TEAM_NUM_CNT)))
+		if (!check_out_of_map_bound(x, y)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
