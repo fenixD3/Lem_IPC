@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <time.h>
 
-#include "ipc_management.h"
+#include "ipc_lib.h"
 
 t_logger *create_logger(const int process_count)
 {
@@ -18,7 +18,7 @@ t_logger *create_logger(const int process_count)
 		perror("malloc_for_logger");
 		exit(EXIT_FAILURE);
 	}
-	logger->sem = get_sem(LOG_SEM_NAME, process_count);
+	logger->sem = get_sem(LOG_SEM_NAME, process_count, LOG_SEM_DEFAULT_VALUE);
 	logger->files_info = NULL;
 	return logger;
 }

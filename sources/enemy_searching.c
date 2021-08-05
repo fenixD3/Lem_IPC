@@ -32,9 +32,9 @@ static bool find_upside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (!check_out_of_map_bound(x, y)
-			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
+		if (!check_out_of_map_bound(x, y, MAP_X)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y, MAP_X)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT, MAP_X))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
@@ -76,9 +76,9 @@ static bool find_downside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (!check_out_of_map_bound(x, y)
-			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
+		if (!check_out_of_map_bound(x, y, MAP_X)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y, MAP_X)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT, MAP_X))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
@@ -120,9 +120,9 @@ static bool find_rightside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (!check_out_of_map_bound(x, y)
-			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
+		if (!check_out_of_map_bound(x, y, MAP_X)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y, MAP_X)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT, MAP_X))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;
@@ -164,9 +164,9 @@ static bool find_leftside(
 			"Iteration: x - %d, y - %d\n",
 			x,
 			y);
-		if (!check_out_of_map_bound(x, y)
-			&& check_occupied_cell(player->ipcs->shm_addr, x, y)
-			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT))
+		if (!check_out_of_map_bound(x, y, MAP_X)
+			&& check_occupied_cell(player->ipcs->shm_addr, x, y, MAP_X)
+			&& player->team_number != get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT, MAP_X))
 		{
 			is_enemy_found = true;
 			enemy_pos->x = x;

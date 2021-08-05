@@ -1,5 +1,5 @@
 #include "lem_ipc.h"
-#include "ipc_management.h"
+#include "ipc_lib.h"
 
 static void init_shm_map(char *shm_addr, const char filler)
 {
@@ -20,7 +20,7 @@ t_ipcs *create_ipcs(const int process_count, const int team_number)
 	ipcs->shm_addr = get_shm(SHM_MAP_NAME, MAP_SIZE, process_count);
 	if (process_count == 1)
 		init_shm_map(ipcs->shm_addr, MAP_FILLER);
-	ipcs->sem = get_sem(SEM_NAME, process_count);
+	ipcs->sem = get_sem(SEM_NAME, process_count, SEM_DEFAULT_VALUE);
 	ipcs->mq = get_mq(MQ_NAME, process_count, team_number);
 	if (!(ipcs->mq_attrs = malloc(sizeof(t_mq_attr))))
 	{
@@ -35,16 +35,16 @@ t_ipcs *create_ipcs(const int process_count, const int team_number)
 	return ipcs;
 }
 
-bool close_ipcs(t_ipcs *ipcs)
+char *create_msg_buff(const long max_msg_size)
 {
-	bool is_error;
+	char *buff;
 
-	is_error = false;
-	if (close_sem(&ipcs->sem))
-		is_error = true;
-	if (close_mq(ipcs->mq))
-		is_error = true;
-	return is_error;
+	if (!(buff = malloc(sizeof(char) * (max_msg_size + 1))))
+	{
+		perror("malloc_mq_buff");
+		exit(EXIT_FAILURE);
+	}
+	return buff;
 }
 
 void destroy_ipcs(t_ipcs *ipcs)
@@ -59,16 +59,4 @@ void destroy_ipcs(t_ipcs *ipcs)
 	destroy_mq(MQ_NAME, TEAM_COUNT);
 	if (is_error)
 		exit(EXIT_FAILURE);
-}
-
-char *create_msg_buff(const long max_msg_size)
-{
-	char *buff;
-
-	if (!(buff = malloc(sizeof(char) * (max_msg_size + 1))))
-	{
-		perror("malloc_mq_buff");
-		exit(EXIT_FAILURE);
-	}
-	return buff;
 }

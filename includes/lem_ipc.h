@@ -15,28 +15,13 @@
 
 #define MAP_FILLER '.'
 
-#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
-#include <sys/mman.h>
 #include <fcntl.h>
-#include <semaphore.h>
-#include <mqueue.h>
 #include <assert.h>
 
 #include "logger.h"
-
-typedef struct mq_attr t_mq_attr;
-
-typedef struct s_ipcs
-{
-	char	*shm_addr;
-	sem_t	*sem;
-	mqd_t	mq;
-	t_mq_attr *mq_attrs;
-} t_ipcs;
+#include "ipc_lib.h"
 
 typedef struct s_pos
 {
@@ -47,7 +32,6 @@ typedef struct s_pos
 typedef struct s_player
 {
 	int team_number;
-//	int team_players;
 	t_pos position;
 	t_ipcs *ipcs;
 	char *msg_buff;
@@ -64,16 +48,9 @@ typedef enum e_direction
 	NONE
 } t_direction;
 
-//extern void (*g_moving[4])(t_player *, const char);
-
 void check_input(int ac, char **av);
 
 t_ipcs *create_ipcs(const int process_count, const int team_number);
-
-bool close_ipcs(t_ipcs *ipcs);
-bool close_sem(sem_t **sem);
-bool close_mq(mqd_t mq);
-void destroy_ipcs(t_ipcs *ipcs);
 
 void fill_player_info(t_player *player, int team_number);
 char *create_msg_buff(const long max_msg_size);
@@ -82,11 +59,9 @@ t_pos get_start_player_position(void);
 void find_starting_place(t_player *player);
 void delete_player(t_player *player);
 
-bool check_death(const t_player *player);
+void destroy_ipcs(t_ipcs *ipcs);
 
-bool check_occupied_cell(const char *map_addr, const int x, const int y);
-bool check_out_of_map_bound(const int x, const int y);
-int get_number_from_map(const char *map_addr, const int x_offset, const int y_offset, const int number_length);
+bool check_death(const t_player *player);
 
 void game_loop(t_player *player);
 t_pos find_enemy(t_player *player);

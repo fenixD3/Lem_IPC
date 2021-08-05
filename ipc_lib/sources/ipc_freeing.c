@@ -1,5 +1,16 @@
-#include "lem_ipc.h"
-#include <string.h>
+#include "ipc_lib.h"
+
+bool close_ipcs(t_ipcs *ipcs)
+{
+	bool is_error;
+
+	is_error = false;
+	if (close_sem(&ipcs->sem))
+		is_error = true;
+	if (close_mq(ipcs->mq))
+		is_error = true;
+	return is_error;
+}
 
 bool close_sem(sem_t **sem)
 {

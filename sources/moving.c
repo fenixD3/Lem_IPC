@@ -2,7 +2,7 @@
 
 void move_up(t_player *player, const char free_space_filler)
 {
-	if (check_out_of_map_bound(player->position.x - 1, player->position.y))
+	if (check_out_of_map_bound(player->position.x - 1, player->position.y, MAP_X))
 	{
 		write_to_log(
 			player->logger,
@@ -11,7 +11,7 @@ void move_up(t_player *player, const char free_space_filler)
 			getpid());
 		return;
 	}
-	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x - 1, player->position.y))
+	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x - 1, player->position.y, MAP_X))
 	{
 		write_to_log(
 			player->logger,
@@ -27,7 +27,7 @@ void move_up(t_player *player, const char free_space_filler)
 
 void move_down(t_player *player, const char free_space_filler)
 {
-	if (check_out_of_map_bound(player->position.x + 1, player->position.y))
+	if (check_out_of_map_bound(player->position.x + 1, player->position.y, MAP_X))
 	{
 		write_to_log(
 				player->logger,
@@ -36,7 +36,7 @@ void move_down(t_player *player, const char free_space_filler)
 				getpid());
 		return;
 	}
-	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x + 1, player->position.y))
+	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x + 1, player->position.y, MAP_X))
 	{
 		write_to_log(
 				player->logger,
@@ -52,7 +52,7 @@ void move_down(t_player *player, const char free_space_filler)
 
 void move_left(t_player *player, const char free_space_filler)
 {
-	if (check_out_of_map_bound(player->position.x, player->position.y - 1))
+	if (check_out_of_map_bound(player->position.x, player->position.y - 1, MAP_X))
 	{
 		write_to_log(
 			player->logger,
@@ -61,7 +61,7 @@ void move_left(t_player *player, const char free_space_filler)
 			getpid());
 		return;
 	}
-	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x, player->position.y - 1))
+	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x, player->position.y - 1, MAP_X))
 	{
 		write_to_log(
 			player->logger,
@@ -77,7 +77,7 @@ void move_left(t_player *player, const char free_space_filler)
 
 void move_right(t_player *player, const char free_space_filler)
 {
-	if (check_out_of_map_bound(player->position.x, player->position.y + 1))
+	if (check_out_of_map_bound(player->position.x, player->position.y + 1, MAP_X))
 	{
 		write_to_log(
 			player->logger,
@@ -86,7 +86,7 @@ void move_right(t_player *player, const char free_space_filler)
 			getpid());
 		return;
 	}
-	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x, player->position.y + 1))
+	if (check_occupied_cell(player->ipcs->shm_addr, player->position.x, player->position.y + 1, MAP_X))
 	{
 		write_to_log(
 			player->logger,

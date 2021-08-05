@@ -25,6 +25,7 @@ typedef struct s_logger
 #define LOG_FILE_NAME_SIZE 30
 #define LOG_FILE_SIZE (256 * getpagesize())
 #define LOG_SEM_NAME "/log_sem"
+#define LOG_SEM_DEFAULT_VALUE 1
 #define LOG_SHM_SIZE_NAME "/log_shm_size"
 
 t_logger *create_logger(const int process_count);

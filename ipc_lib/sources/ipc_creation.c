@@ -1,6 +1,4 @@
-#include "lem_ipc.h"
-#include "ipc_management.h"
-#include <string.h>
+#include "ipc_lib.h"
 
 char *get_shm(const char *shm_name, size_t shm_size, const int process_count)
 {
@@ -36,13 +34,13 @@ char *get_shm(const char *shm_name, size_t shm_size, const int process_count)
 	return shm_addr;
 }
 
-sem_t *get_sem(const char *sem_name, const int process_count)
+sem_t *get_sem(const char *sem_name, const int process_count, const int default_value)
 {
 	sem_t *sem;
 
 	if (process_count == 1)
 		sem_unlink(sem_name);
-	sem = sem_open(sem_name, O_CREAT | O_EXCL, 0644, SEM_DEFAULT_VALUE);
+	sem = sem_open(sem_name, O_CREAT | O_EXCL, 0644, default_value);
 	if (sem == SEM_FAILED && errno == EEXIST)
 		sem = sem_open(sem_name, 0);
 	else if (sem == SEM_FAILED)

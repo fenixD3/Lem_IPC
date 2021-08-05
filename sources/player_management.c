@@ -2,7 +2,7 @@
 #include <time.h>
 #include "logger.h"
 #include <stdio.h>
-#include "ipc_management.h"
+#include "ipc_lib.h"
 
 #define BEGIN_RAND_DIAPASON 0
 #define END_RAND_DIAPASON (MAP_X - 1)
@@ -10,7 +10,6 @@
 void init_player(t_player *player)
 {
 	player->team_number = -1;
-//	player->team_players = 0;
 	player->position.x = -1;
 	player->position.y = -1;
 	player->ipcs = NULL;
@@ -25,7 +24,6 @@ void fill_player_info(t_player *player, int team_number)
 	get_or_create_mapped_file(FILE_PROCESS_NAME, sizeof(int), (void **)&player->process_count_mapped);
 	++*player->process_count_mapped;
 	player->team_number = team_number;
-//	++player->team_players;
 	player->ipcs = create_ipcs(*player->process_count_mapped, player->team_number);
 	player->msg_buff = create_msg_buff(player->ipcs->mq_attrs->mq_msgsize);
 	player->logger = create_logger(*player->process_count_mapped);
@@ -59,8 +57,8 @@ void find_starting_place(t_player *player)
 	sem_wait(player->ipcs->sem);
 	player_position = get_start_player_position();
 	for (bool is_not_placed = true; is_not_placed; player_position = get_start_player_position())
-		if (!check_out_of_map_bound(player_position.x, player_position.y)
-			&& !check_occupied_cell(player->ipcs->shm_addr, player_position.x, player_position.y))
+		if (!check_out_of_map_bound(player_position.x, player_position.y, MAP_X)
+			&& !check_occupied_cell(player->ipcs->shm_addr, player_position.x, player_position.y, MAP_X))
 			is_not_placed = false;
 	*(player->ipcs->shm_addr + (player_position.x * MAP_X + player_position.y)) = player->team_number + '0';
 	player->position = player_position;

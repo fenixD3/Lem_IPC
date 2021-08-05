@@ -16,9 +16,9 @@ bool check_death(const t_player *player)
 	for (int x = player->position.x - 1; !is_died && x <= player->position.x + 1; ++x)
 		for (int y = player->position.y - 1; !is_died && y <= player->position.y + 1; ++y)
 		{
-			if (!check_out_of_map_bound(x, y)
-				&& check_occupied_cell(player->ipcs->shm_addr, x, y)
-				&& player->team_number != (enemy_team = get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT)))
+			if (!check_out_of_map_bound(x, y, MAP_X)
+				&& check_occupied_cell(player->ipcs->shm_addr, x, y, MAP_X)
+				&& player->team_number != (enemy_team = get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT, MAP_X)))
 			{
 				++enemy_cnt[enemy_team];
 				write_to_log(
