@@ -37,6 +37,7 @@ typedef struct s_player
 	char *msg_buff;
 	t_logger *logger;
 	int *process_count_mapped;
+	pid_t pid;
 } t_player;
 
 typedef enum e_direction
@@ -53,6 +54,7 @@ void check_input(int ac, char **av);
 t_ipcs *create_ipcs(const int process_count, const int team_number);
 
 void fill_player_info(t_player *player, int team_number);
+void start_graphic(const t_player *player);
 char *create_msg_buff(const long max_msg_size);
 void init_player(t_player *player);
 t_pos get_start_player_position(void);

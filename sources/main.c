@@ -52,7 +52,7 @@ void print_shm(t_ipcs *ipcs)
 
 /// test TODO
 /// попытаться перехватить sigterm-sigkill
-/// прикрутить ncurses (забрать у julien/brhamidi)
+/// прикрутить ncurses
 
 int main(int ac, char **av)
 {
@@ -62,6 +62,7 @@ int main(int ac, char **av)
 	fill_player_info(&player, atoi(av[1]));
 //	print_shm(player.ipcs); /// tests
 	sleep(3);
+	start_graphic(&player);
 //	print_shm(player.ipcs);
 	game_loop(&player);
 	delete_player(&player);

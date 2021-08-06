@@ -1,8 +1,10 @@
 #include "lem_ipc.h"
-#include <time.h>
 #include "logger.h"
-#include <stdio.h>
 #include "ipc_lib.h"
+
+#include <sys/wait.h>
+#include <time.h>
+#include <stdio.h>
 
 #define BEGIN_RAND_DIAPASON 0
 #define END_RAND_DIAPASON (MAP_X - 1)
@@ -23,6 +25,10 @@ void fill_player_info(t_player *player, int team_number)
 	init_player(player);
 	get_or_create_mapped_file(FILE_PROCESS_NAME, sizeof(int), (void **)&player->process_count_mapped);
 	++*player->process_count_mapped;
+	if (*player->process_count_mapped == 1)
+		player->pid = getpid();
+	else
+		player->pid = -1;
 	player->team_number = team_number;
 	player->ipcs = create_ipcs(*player->process_count_mapped, player->team_number);
 	player->msg_buff = create_msg_buff(player->ipcs->mq_attrs->mq_msgsize);
@@ -83,4 +89,6 @@ void delete_player(t_player *player)
 		destroy_logger(player->logger);
 		unlink(FILE_PROCESS_NAME);
 	}
+	if (player->pid != -1)
+		wait(NULL);
 }
