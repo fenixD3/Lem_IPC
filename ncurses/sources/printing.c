@@ -45,9 +45,10 @@ void print_line(t_graphic *ncurse, int y)
 	x = 0;
 	while (x < MAP_X * 3)
 	{
-		team = check_occupied_cell(ncurse->ipcs->shm_addr, x, j, MAP_X)
-			? get_number_from_map(ncurse->ipcs->shm_addr, x, j, TEAM_NUM_CNT, MAP_X)
-			: 0;
+		if (!check_out_of_map_bound(x, j, MAP_X) && check_occupied_cell(ncurse->ipcs->shm_addr, x, j, MAP_X))
+			team = get_number_from_map(ncurse->ipcs->shm_addr, x, j, TEAM_NUM_CNT, MAP_X);
+		else
+			team = 0;
 		mvprintw(j, x++, "|");
 		attron(COLOR_PAIR(team));
 		mvprintw(j, x++, " ");

@@ -93,4 +93,7 @@ static t_pos position_offsets[4] =
 	{.x = 0, .y = 1},
 };
 
+void install_disposition(void);
+void delete_handler(int sig_no);
+
 #endif

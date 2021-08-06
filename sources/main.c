@@ -51,8 +51,8 @@ void print_shm(t_ipcs *ipcs)
 	/// Upd: возможно не так то просто, ьольше похоже уже на ИИ
 
 /// test TODO
-/// попытаться перехватить sigterm-sigkill
-/// прикрутить ncurses
+/// попытаться перехватить sigterm-sigkill. Upd: скорее всего не нужно будет
+/// прикрутить ncurses [check]
 
 int main(int ac, char **av)
 {

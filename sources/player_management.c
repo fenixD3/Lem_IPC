@@ -87,6 +87,7 @@ void delete_player(t_player *player)
 		destroy_ipcs(player->ipcs);
 		write_to_log(player->logger, *player->process_count_mapped, "Destroy logger\n");
 		destroy_logger(player->logger);
+		munmap(player->process_count_mapped, sizeof(int));
 		unlink(FILE_PROCESS_NAME);
 	}
 	if (player->pid != -1)
