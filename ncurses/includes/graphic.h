@@ -1,6 +1,7 @@
 #ifndef GRAPHIC_H
 #define GRAPHIC_H
 
+#define TEAM_COUNT 4
 #define TEAM_NUM_CNT 1
 #define MAP_X 20
 #define MAP_SIZE MAP_X * MAP_X
@@ -23,8 +24,9 @@ typedef struct s_graphic
 t_graphic *init_ncurse(void);
 void delete_ncurse(t_graphic **ncurse);
 void loop(t_graphic *ncurse);
+bool is_finished(const int *team_cnt);
 
-void print_line(t_graphic *ncurse, int y);
+void print_line(t_graphic *ncurse, int y, int *team_cnt);
 void print_row(int y);
 
 #endif

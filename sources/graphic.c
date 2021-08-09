@@ -2,7 +2,7 @@
 
 void start_graphic(const t_player *player)
 {
-	if (*player->process_count_mapped == 0)
+	if (player->pid == -1)
 		return;
 	pid_t pid = fork();
 	if (pid == -1)

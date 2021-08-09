@@ -11,3 +11,4 @@ add_library(IPC_lib SHARED
 )
 
 target_include_directories(IPC_lib PUBLIC includes)
+target_link_libraries(IPC_lib pthread rt)

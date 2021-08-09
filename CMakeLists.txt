@@ -20,7 +20,7 @@ add_executable(Lem_IPC_Ncurses
     ncurses/sources/main.c
     ncurses/sources/printing.c)
 
-add_subdirectory(ipc_lib ncurses)
+add_subdirectory(ipc_lib)
 
 target_include_directories(Lem_IPC PRIVATE
         includes
@@ -28,5 +28,5 @@ target_include_directories(Lem_IPC PRIVATE
 
 target_include_directories(Lem_IPC_Ncurses PRIVATE ncurses/includes)
 
-target_link_libraries(Lem_IPC pthread rt IPC_lib)
-target_link_libraries(Lem_IPC_Ncurses ncurses pthread rt IPC_lib)
+target_link_libraries(Lem_IPC IPC_lib)
+target_link_libraries(Lem_IPC_Ncurses ncurses IPC_lib)

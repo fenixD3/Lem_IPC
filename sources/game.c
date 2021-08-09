@@ -20,7 +20,7 @@ bool check_death(const t_player *player)
 				&& check_occupied_cell(player->ipcs->shm_addr, x, y, MAP_X)
 				&& player->team_number != (enemy_team = get_number_from_map(player->ipcs->shm_addr, x, y, TEAM_NUM_CNT, MAP_X)))
 			{
-				++enemy_cnt[enemy_team];
+				++enemy_cnt[enemy_team - 1];
 				write_to_log(
 					player->logger,
 					*player->process_count_mapped,
@@ -30,7 +30,7 @@ bool check_death(const t_player *player)
 					x,
 					y,
 					enemy_team,
-					enemy_cnt[enemy_team]);
+					enemy_cnt[enemy_team - 1]);
 
 				for (int team = 0; team < TEAM_COUNT; ++team)
 					if (enemy_cnt[team] == 2)
@@ -168,7 +168,10 @@ void game_loop(t_player *player)
 			enemy_pos.x,
 			enemy_pos.y);
 		if (enemy_pos.x == -1 && enemy_pos.y == -1)
+		{
+			sem_post(player->ipcs->sem);
 			return print_winner(player);
+		}
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
 		sleep(3);
