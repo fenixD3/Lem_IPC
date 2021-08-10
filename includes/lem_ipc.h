@@ -77,20 +77,12 @@ void move_down(t_player *player, const char free_space_filler);
 void move_left(t_player *player, const char free_space_filler);
 void move_right(t_player *player, const char free_space_filler);
 
-static void (*g_moving[4])(t_player *, const char) =
+static void (* const g_moving[4])(t_player *, const char) =
 {
 	move_up,
 	move_down,
 	move_left,
 	move_right
-};
-
-static t_pos position_offsets[4] =
-{
-	{.x = -1, .y = 0},
-	{.x = 1, .y = 0},
-	{.x = 0, .y = -1},
-	{.x = 0, .y = 1},
 };
 
 void install_disposition(void);

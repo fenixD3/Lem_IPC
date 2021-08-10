@@ -25,6 +25,7 @@ void fill_player_info(t_player *player, int team_number)
 	init_player(player);
 	get_or_create_mapped_file(FILE_PROCESS_NAME, sizeof(int), (void **)&player->process_count_mapped);
 	++*player->process_count_mapped;
+	msync(player->process_count_mapped, sizeof(int), MS_ASYNC | MS_INVALIDATE);
 	if (*player->process_count_mapped == 1)
 		player->pid = getpid();
 	else
@@ -41,6 +42,7 @@ void fill_player_info(t_player *player, int team_number)
 		getpid(),
 		team_number);
 	find_starting_place(player);
+	install_disposition();
 }
 
 t_pos get_start_player_position(void)
@@ -81,6 +83,7 @@ void find_starting_place(t_player *player)
 void delete_player(t_player *player)
 {
 	--*player->process_count_mapped;
+	msync(player->process_count_mapped, sizeof(int), MS_ASYNC | MS_INVALIDATE);
 	close_ipcs(player->ipcs);
 	if (player->pid != -1)
 	{

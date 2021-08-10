@@ -1,18 +1,5 @@
 #include "lem_ipc.h"
 
-static t_direction check_direction(const t_pos *player_pos, const t_direction dir)
-{
-	switch (dir)
-	{
-	case UP:
-	case DOWN:
-	case LEFT:
-	case RIGHT:
-	default:
-		return NONE;
-	}
-}
-
 t_direction get_direction(const t_pos *player_pos, const t_pos *enemy_pos)
 {
 	int dx, dy, delta;

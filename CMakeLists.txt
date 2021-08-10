@@ -14,7 +14,9 @@ add_executable(Lem_IPC
     sources/logger/logger_utils.c
     sources/moving.c
     sources/enemy_searching.c
-    sources/directions.c sources/graphic.c sources/signals.c)
+    sources/directions.c
+    sources/graphic.c
+    sources/signals.c)
 
 add_executable(Lem_IPC_Ncurses
     ncurses/sources/main.c
