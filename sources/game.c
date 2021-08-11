@@ -140,7 +140,8 @@ void game_loop(t_player *player)
 {
 	while (true)
 	{
-		sem_wait(player->ipcs->sem);
+		if (sem_wait(player->ipcs->sem) == -1 && errno == EINVAL)
+			return check_interrupt_flag();
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
@@ -174,6 +175,7 @@ void game_loop(t_player *player)
 		}
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
-		sleep(3);
+		if (usleep(3000000) == -1 && errno == EINVAL)
+			return check_interrupt_flag();
 	}
 }

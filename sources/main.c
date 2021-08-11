@@ -1,22 +1,23 @@
 #include "lem_ipc.h"
 #include <ctype.h>
 
-void print_shm(t_ipcs *ipcs)
+void print_shm(t_player *player)
 {
-	sem_wait(ipcs->sem);
+	if (sem_wait(player->ipcs->sem) == -1 && errno == EINVAL)
+		return check_interrupt_flag(); /// TODO если использовать буду, то изменить!
 	for (int x = 0; x < MAP_SIZE; x += MAP_X)
 	{
-		printf("%p: ", ipcs->shm_addr + x);
+		printf("%p: ", player->ipcs->shm_addr + x);
 		for (int y = 0; y < MAP_X; ++y)
 		{
-			printf("%c", *(ipcs->shm_addr + (x + y)));
+			printf("%c", *(player->ipcs->shm_addr + (x + y)));
 			if (y + 1 == MAP_X)
 				printf("\n");
 			else
 				printf(" ");
 		}
 	}
-	sem_post(ipcs->sem);
+	sem_post(player->ipcs->sem);
 }
 
 /// TODO:
@@ -61,10 +62,13 @@ int main(int ac, char **av)
 
 	check_input(ac, av);
 	fill_player_info(&player, atoi(av[1]));
-//	print_shm(player.ipcs); /// tests
-	sleep(3);
-	start_graphic(&player);
-//	print_shm(player.ipcs);
+	if (usleep(3000000) == -1 && errno == EINVAL)
+	{
+		check_interrupt_flag();
+		delete_player(&player);
+		return (EXIT_SUCCESS);
+	}
+//	start_graphic(&player);
 	game_loop(&player);
 	delete_player(&player);
 	return (EXIT_SUCCESS);

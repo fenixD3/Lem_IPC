@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <assert.h>
+#include <signal.h>
 
 #include "logger.h"
 #include "ipc_lib.h"
@@ -85,7 +86,10 @@ static void (* const g_moving[4])(t_player *, const char) =
 	move_right
 };
 
+static volatile sig_atomic_t interrupt_flag = 0;
+
 void install_disposition(void);
 void delete_handler(int sig_no);
+void check_interrupt_flag();
 
 #endif

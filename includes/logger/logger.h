@@ -3,6 +3,7 @@
 
 #include <semaphore.h>
 #include <stdbool.h>
+#include <errno.h>
 
 typedef struct s_files
 {

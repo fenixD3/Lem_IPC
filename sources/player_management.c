@@ -1,6 +1,5 @@
 #include "lem_ipc.h"
 #include "logger.h"
-#include "ipc_lib.h"
 
 #include <sys/wait.h>
 #include <time.h>
@@ -62,7 +61,12 @@ void find_starting_place(t_player *player)
 {
 	t_pos player_position;
 
-	sem_wait(player->ipcs->sem);
+	if (sem_wait(player->ipcs->sem) == -1 && errno == EINVAL)
+	{
+		check_interrupt_flag();
+		delete_player(player);
+		exit(EXIT_SUCCESS);
+	}
 	player_position = get_start_player_position();
 	for (bool is_not_placed = true; is_not_placed; player_position = get_start_player_position())
 		if (!check_out_of_map_bound(player_position.x, player_position.y, MAP_X)
