@@ -1,10 +1,8 @@
 #include "logger.h"
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <errno.h>
 #include <time.h>
 
 #include "ipc_lib.h"

@@ -1,5 +1,4 @@
 #include "lem_ipc.h"
-#include "logger.h"
 
 #include <sys/wait.h>
 #include <time.h>
@@ -41,7 +40,6 @@ void fill_player_info(t_player *player, int team_number)
 		getpid(),
 		team_number);
 	find_starting_place(player);
-	install_disposition();
 }
 
 t_pos get_start_player_position(void)
@@ -88,6 +86,7 @@ void delete_player(t_player *player)
 {
 	--*player->process_count_mapped;
 	msync(player->process_count_mapped, sizeof(int), MS_ASYNC | MS_INVALIDATE);
+	*(player->ipcs->shm_addr + (player->position.x * MAP_X + player->position.y)) = MAP_FILLER;
 	close_ipcs(player->ipcs);
 	if (player->pid != -1)
 	{

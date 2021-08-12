@@ -90,6 +90,6 @@ static volatile sig_atomic_t interrupt_flag = 0;
 
 void install_disposition(void);
 void delete_handler(int sig_no);
-void check_interrupt_flag();
+bool check_interrupt_flag();
 
 #endif

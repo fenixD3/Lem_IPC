@@ -1,10 +1,12 @@
 #include "lem_ipc.h"
-#include <ctype.h>
 
 void print_shm(t_player *player)
 {
 	if (sem_wait(player->ipcs->sem) == -1 && errno == EINVAL)
-		return check_interrupt_flag(); /// TODO если использовать буду, то изменить!
+	{
+		check_interrupt_flag();
+		return;
+	}  /// TODO если использовать буду, то изменить!
 	for (int x = 0; x < MAP_SIZE; x += MAP_X)
 	{
 		printf("%p: ", player->ipcs->shm_addr + x);
@@ -51,15 +53,17 @@ void print_shm(t_player *player)
 /// нужно написать альтернативный выбор направления движения (если, например клетка занята)
 	/// Upd: возможно не так то просто, ьольше похоже уже на ИИ
 
-/// test TODO
 /// попытаться перехватить sigterm-sigkill. Upd: скорее всего не нужно будет
-	/// написать перехват SIGINT (Ctrl+C) и просто очистить все IPC (boilerplaite) [check]
+	/// написать перехват SIGINT (Ctrl+C) и просто очистить все IPC (boilerplaite) [done]
 /// прикрутить ncurses [done]
 
 int main(int ac, char **av)
 {
 	t_player player;
 
+	install_disposition();
+	printf("Init Interrupt flag: %d\n", interrupt_flag);
+	fflush(stdout);
 	check_input(ac, av);
 	fill_player_info(&player, atoi(av[1]));
 	if (usleep(3000000) == -1 && errno == EINVAL)
@@ -68,7 +72,7 @@ int main(int ac, char **av)
 		delete_player(&player);
 		return (EXIT_SUCCESS);
 	}
-//	start_graphic(&player);
+	start_graphic(&player);
 	game_loop(&player);
 	delete_player(&player);
 	return (EXIT_SUCCESS);

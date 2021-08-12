@@ -96,7 +96,6 @@ void move_to(t_player *player, const t_pos *enemy_pos)
 			player->position.y);
 	}
 	else
-		/// TODO may be send to MSQ this enemy_pos
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
@@ -126,7 +125,7 @@ t_pos get_enemy_position(t_player *player)
 			*player->process_count_mapped,
 			"Player PID %d found enemy in map\n",
 			getpid());
-		mq_send(player->ipcs->mq, message, strlen(message), 0); /// TODO may be need send message n time (n - count process in team)
+		mq_send(player->ipcs->mq, message, strlen(message), 0);
 	}
 	return enemy_pos;
 }
@@ -140,8 +139,13 @@ void game_loop(t_player *player)
 {
 	while (true)
 	{
+		printf("Game Interrupt flag: %d\n", interrupt_flag);
+		fflush(stdout);
 		if (sem_wait(player->ipcs->sem) == -1 && errno == EINVAL)
-			return check_interrupt_flag();
+		{
+			check_interrupt_flag();
+			return;
+		}
 		write_to_log(
 			player->logger,
 			*player->process_count_mapped,
@@ -154,7 +158,6 @@ void game_loop(t_player *player)
 				*player->process_count_mapped,
 				"Player PID %d died\n",
 				getpid());
-			*(player->ipcs->shm_addr + (player->position.x * MAP_X + player->position.y)) = MAP_FILLER;
 			sem_post(player->ipcs->sem);
 			return;
 		}
@@ -175,7 +178,12 @@ void game_loop(t_player *player)
 		}
 		move_to(player, &enemy_pos);
 		sem_post(player->ipcs->sem);
+		if (check_interrupt_flag())
+			return;
 		if (usleep(3000000) == -1 && errno == EINVAL)
-			return check_interrupt_flag();
+		{
+			check_interrupt_flag();
+			return;
+		}
 	}
 }
