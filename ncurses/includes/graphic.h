@@ -24,9 +24,10 @@ typedef struct s_graphic
 t_graphic *init_ncurse(void);
 void delete_ncurse(t_graphic **ncurse);
 void loop(t_graphic *ncurse);
+
 bool is_finished(const int *team_cnt);
 
-void print_line(t_graphic *ncurse, int y, int *team_cnt);
+void print_line(t_graphic *ncurse, int y, int *team_cnt, bool *is_living_team);
 void print_row(int y);
 
 #endif

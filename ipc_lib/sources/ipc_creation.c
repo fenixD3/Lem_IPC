@@ -62,7 +62,6 @@ mqd_t get_mq(const char *mq_name_prefix, const int process_count, const int team
 		exit(EXIT_FAILURE);
 	}
 	sprintf(mq_name, "%s%s%d", mq_name_prefix, "_", team_number);
-	printf("PID %d, Mq name = %s\n", getpid(), mq_name);
 	if (process_count == 1)
 		mq_unlink(mq_name);
 	mq = mq_open(mq_name, O_RDWR | O_CREAT | O_EXCL | O_NONBLOCK, 0644, NULL);

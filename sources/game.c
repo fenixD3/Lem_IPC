@@ -139,8 +139,6 @@ void game_loop(t_player *player)
 {
 	while (true)
 	{
-		printf("Game Interrupt flag: %d\n", interrupt_flag);
-		fflush(stdout);
 		if (sem_wait(player->ipcs->sem) == -1 && errno == EINVAL)
 		{
 			check_interrupt_flag();

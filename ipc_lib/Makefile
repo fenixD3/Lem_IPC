@@ -17,6 +17,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@gcc $(SHARED_FLAG) -o $(NAME) $(OBJS)
+	@sudo rm -rf $(NAME_LIB_LINK)
 
 $(OBJS): %.o:%.c $(HEADERS)
 	@gcc -c $< -I$(HEADER_PATH) $(FLAGS) -o $@
@@ -27,5 +28,6 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
+	@sudo rm -rf $(NAME_LIB_LINK)
 
 re: fclean all

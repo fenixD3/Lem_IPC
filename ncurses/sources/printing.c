@@ -7,19 +7,19 @@ void loop(t_graphic *ncurse)
 	while(true)
 	{
 		int team_cnt[TEAM_COUNT] = {0};
+		bool is_living_team = false;
+
 		sem_wait(ncurse->ipcs->sem);
 		y = 0;
 		while (y < MAP_X)
 		{
-			print_line(ncurse, y, team_cnt);
+			print_line(ncurse, y, team_cnt, &is_living_team);
 			y++;
 		}
 		print_row(y * 2);
-		mvprintw(y * 2 + 1, 0, "%d", getppid());
-		mvprintw(y * 2 + 2, 0, "%d", getpid());
 		sem_post(ncurse->ipcs->sem);
 		refresh();
-		if (is_finished(team_cnt))
+		if (!is_living_team || is_finished(team_cnt))
 			return;
 		sleep(1);
 	}
@@ -32,14 +32,14 @@ void print_row(int y)
 	x = 0;
 	while (x < MAP_X * 3)
 	{
-		mvprintw(y, x++, "+");
-		mvprintw(y, x++, "-");
-		mvprintw(y, x++, "-");
+		mvprintw(y, x++, " ");
+		mvprintw(y, x++, " ");
+		mvprintw(y, x++, " ");
 	}
-	mvprintw(y, x++, "+");
+	mvprintw(y, x++, " ");
 }
 
-void print_line(t_graphic *ncurse, int y, int *team_cnt)
+void print_line(t_graphic *ncurse, int y, int *team_cnt, bool *is_living_team)
 {
 	int	j, x, team;
 
@@ -52,10 +52,11 @@ void print_line(t_graphic *ncurse, int y, int *team_cnt)
 		{
 			team = get_number_from_map(ncurse->ipcs->shm_addr, j / 2, x / 3, TEAM_NUM_CNT, MAP_X);
 			team_cnt[team - 1] += 1;
+			*is_living_team = true;
 		}
 		else
 			team = 0;
-		mvprintw(j, x++, "|");
+		mvprintw(j, x++, " ");
 		attron(COLOR_PAIR(team));
 		mvprintw(j, x++, " ");
 		if (team != 0)
@@ -65,7 +66,7 @@ void print_line(t_graphic *ncurse, int y, int *team_cnt)
 		x++;
 		attron(COLOR_PAIR(5));
 	}
-	mvprintw(j, x, "|");
+	mvprintw(j, x, " ");
 }
 
 bool is_finished(const int *team_cnt)

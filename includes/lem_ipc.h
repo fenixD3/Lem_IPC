@@ -86,7 +86,7 @@ static void (* const g_moving[4])(t_player *, const char) =
 	move_right
 };
 
-static volatile sig_atomic_t interrupt_flag = 0;
+static volatile sig_atomic_t g_interrupt_flag = 0;
 
 void install_disposition(void);
 void delete_handler(int sig_no);

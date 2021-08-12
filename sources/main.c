@@ -62,8 +62,6 @@ int main(int ac, char **av)
 	t_player player;
 
 	install_disposition();
-	printf("Init Interrupt flag: %d\n", interrupt_flag);
-	fflush(stdout);
 	check_input(ac, av);
 	fill_player_info(&player, atoi(av[1]));
 	if (usleep(3000000) == -1 && errno == EINVAL)

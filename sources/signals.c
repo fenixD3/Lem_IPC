@@ -2,13 +2,9 @@
 
 bool check_interrupt_flag()
 {
-	printf("Check Interrupt flag: %d\n", interrupt_flag);
-	fflush(stdout);
-	write(STDOUT_FILENO, "check_interrupt\0\n", 17);
-	if (interrupt_flag)
+	if (g_interrupt_flag)
 	{
-		write(STDOUT_FILENO, "check_interrupt: OK\0\n", 21);
-		interrupt_flag = 0;
+		g_interrupt_flag = 0;
 		return true;
 	}
 	return false;
@@ -17,9 +13,7 @@ bool check_interrupt_flag()
 void delete_handler(__attribute__((unused))int sig_no)
 {
 	install_disposition();
-	interrupt_flag = 1;
-	printf("Handler Interrupt flag: %d\n", interrupt_flag);
-	fflush(stdout);
+	g_interrupt_flag = 1;
 }
 
 void install_disposition(void)

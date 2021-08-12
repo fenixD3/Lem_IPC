@@ -89,8 +89,9 @@ void delete_player(t_player *player)
 	*(player->ipcs->shm_addr + (player->position.x * MAP_X + player->position.y)) = MAP_FILLER;
 	close_ipcs(player->ipcs);
 	if (player->pid != -1)
-	{
 		wait(NULL);
+	if (*player->process_count_mapped == 0)
+	{
 		destroy_ipcs(player->ipcs);
 		write_to_log(player->logger, *player->process_count_mapped, "Destroy logger\n");
 		destroy_logger(player->logger);
